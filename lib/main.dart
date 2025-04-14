@@ -63,25 +63,11 @@ void setupDependencies() {
 
   getIt.registerSingleton<UnidadRepository>(UnidadDataAdapter());
   getIt.registerSingleton<UnidadCasoUso>(
-      UnidadCasoUso(getIt<UnidadRepository>()));
-
-  getIt.registerSingleton<ProfesorRepository>(ProfesorDataAdapter());
-  getIt.registerSingleton<ProfesorCasoUso>(
-      ProfesorCasoUso(profesorRepository: getIt<ProfesorRepository>()));
-}
-
-void setupDependencies() {
-  getIt.registerSingleton<CursoRepository>(CursosDataAdapter());
-  getIt.registerSingleton<CursosCasoUso>(
-      CursosCasoUso(cursoRepository: getIt<CursoRepository>()));
-
-  getIt.registerSingleton<ProfesorRepository>(ProfesorDataAdapter());
-  getIt.registerSingleton<ProfesorCasoUso>(
-      ProfesorCasoUso(profesorRepository: getIt<ProfesorRepository>()));
-
-  getIt.registerSingleton<UnidadRepository>(UnidadDataAdapter());
-  getIt.registerSingleton<UnidadCasoUso>(
       UnidadCasoUso(unidadRepository: getIt<UnidadRepository>()));
+
+  getIt.registerSingleton<ProfesorRepository>(ProfesorDataAdapter());
+  getIt.registerSingleton<ProfesorCasoUso>(
+      ProfesorCasoUso(profesorRepository: getIt<ProfesorRepository>()));
 }
 
 

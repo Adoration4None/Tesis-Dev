@@ -4,7 +4,7 @@ import '/domain/repository/unidad_repository.dart';
 
 class UnidadCasoUso {
   final UnidadRepository unidadRepository;
-  UnidadCasoUso(this.unidadRepository);
+  UnidadCasoUso({required this.unidadRepository});
 
   Future<List<Unidad>> getUnidades(int idCurso) {
     return unidadRepository.getUnidades(idCurso);
