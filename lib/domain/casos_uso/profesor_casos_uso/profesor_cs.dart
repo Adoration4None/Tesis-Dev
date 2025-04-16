@@ -10,19 +10,7 @@ class ProfesorCasoUso {
     return profesorRepository.getProfesores();
   }
 
-  Future<void> subirProfesorFB(Profesor profesor) async {
-    // Referencia a la colección "productos" en Firestore
-    CollectionReference productos =
-        FirebaseFirestore.instance.collection('profesores');
-
-    // Convertir el objeto Producto a un mapa
-    Map<String, dynamic> data = profesor.toMap();
-
-    // Agregar el documento a la colección
-    await productos.add(data).then((value) {
-      print('Profesor agregado con ID: ${value.id}');
-    }).catchError((error) {
-      print('Error al agregar el Profesor: $error');
-    });
+  Future<Profesor> crearProfesor(Profesor profesor) async {
+    return profesorRepository.crearProfesor(profesor);
   }
 }
