@@ -23,7 +23,7 @@ import 'domain/casos_uso/curso_casos_uso/curso_cs.dart';
 import 'domain/casos_uso/profesor_casos_uso/profesor_cs.dart';
 import 'domain/casos_uso/unidad_casos_uso/unidad_cs.dart';
 import 'domain/repository/curso_repository.dart';
-import 'domain/repository/profesor_respository.dart';
+/* import 'domain/repository/profesor_respository.dart'; */
 import 'domain/repository/unidad_repository.dart';
 import 'firebase_options.dart';
 import 'infraestructure/driven_adapter/cursos_adapter/cursos_data_adapter.dart';
@@ -65,9 +65,10 @@ void setupDependencies() {
   getIt.registerSingleton<UnidadCasoUso>(
       UnidadCasoUso(unidadRepository: getIt<UnidadRepository>()));
 
-  getIt.registerSingleton<ProfesorRepository>(ProfesorDataAdapter());
-  getIt.registerSingleton<ProfesorCasoUso>(
-      ProfesorCasoUso(profesorRepository: getIt<ProfesorRepository>()));
+// getIt.registerSingleton<ProfesorRepository>(ProfesorDataAdapter());
+//  getIt.registerSingleton<ProfesorCasoUso>(
+//      ProfesorCasoUso(profesorRepository: getIt<ProfesorRepository>()));
+      getIt.registerSingleton<ProfesorCasoUso>(ProfesorCasoUso());
 }
 
 

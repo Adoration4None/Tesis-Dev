@@ -338,7 +338,7 @@ class RegistroFormWebState extends State<RegistroFormWeb> {
     );
   }
 
-  Future<void> _register(Profesor profesor) async {
+/* Future<void> _register(Profesor profesor) async {
     try {
       UserCredential userCredential =
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -361,6 +361,16 @@ class RegistroFormWebState extends State<RegistroFormWeb> {
     } catch (e) {
       print('Error desconocido: $e');
     }
+  } */
+
+  Future<void> _register(Profesor profesor) async {
+    try {
+      await profesorCasoUso.crearProfesor(profesor);
+      print("Profesor registrado en backend");
+    } catch (e) {
+      print("Error al registrar en backend: $e");
+    }
+
   }
 
   void _selectAvatar(String avatarPath) {
