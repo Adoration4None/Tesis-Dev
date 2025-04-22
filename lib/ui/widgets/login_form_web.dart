@@ -188,7 +188,7 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  Future<void> _login(
+  /* Future<void> _login(
       String email,
       String password,
       BuildContext context,
@@ -223,5 +223,38 @@ class _LoginFormState extends State<LoginForm> {
         content: Text('Ups! Algo salio mal, intentalo de nuevo.'),
       ));
     }
-  }
+  } */
+
+  Future<void> _login(
+    String email,
+    String password,
+    BuildContext context,
+    GoRouter router,
+  List<Profesor> profesoresCubit,
+  ) async {
+    final profesorCasoUso = ProfesorCasoUso();
+    final profesorCubit = context.read<ProfesorCubit>();
+      profesorCubit.actualizarProfesor(
+          profesoresCubit.firstWhere((element) => element.email == email));
+
+      try {
+        final profesor = await profesorCasoUso.login(email, password);
+
+        if (profesor != null) {
+          context.read<ProfesorCubit>().actualizarProfesor(profesor);
+
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Bienvenido de nuevo a Mundo PC!'),
+          ));
+
+          await Future.delayed(const Duration(seconds: 2));
+          router.go('/panelprofesor/${profesor.id}');
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Ups! Algo salio mal, intentalo de nuevo.'),
+        ));
+      }
+    }
+
 }

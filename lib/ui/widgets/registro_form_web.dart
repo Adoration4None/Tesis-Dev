@@ -322,7 +322,8 @@ class RegistroFormWebState extends State<RegistroFormWeb> {
                       //profesorCasoUso.subirProfesorFB(profesor);
 
                       // Navegar a la siguiente pantalla
-                      router.go('/crearcursobienvenida');
+                      /* router.go('/crearcursobienvenida'); */
+                      router.go('/iniciosesion');
                     }
                   },
                   text: 'Registrarse',

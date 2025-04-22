@@ -5,13 +5,30 @@ import '/domain/model/profesor.dart';
 class ProfesorCasoUso {
   final String baseUrl = 'http://localhost:8080/profesores';
 
+  Future<Profesor?> login(String email, String password) async {
+    final url = Uri.parse('$baseUrl/login');
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email, 'password': password}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return Profesor.fromJson(data);
+    } else {
+      throw Exception(response.body);
+    }
+  }
+
   Future<List<Profesor>> getProfesores() async {
     final response = await http.get(Uri.parse(baseUrl));
     if (response.statusCode == 200) {
-      final List<dynamic> body = json.decode(response.body);
-      return body.map((e) => Profesor.fromJson(e)).toList();
+      final List<dynamic> jsonList = jsonDecode(response.body);
+      return jsonList.map((e) => Profesor.fromJson(e)).toList();
     } else {
-      throw Exception('Error al obtener los profesores');
+      throw Exception('Error al obtener la lista de profesores');
     }
   }
 
