@@ -1,3 +1,5 @@
+import 'package:proyect_flutter/controller/login_controller.dart';
+
 import '../../domain/model/profesor.dart';
 import '../bloc/profesor_bloc.dart';
 import '/constants/styles.dart';
@@ -117,13 +119,23 @@ class LoginFormMobile extends StatelessWidget {
                     onPressed: () async {
                       if (emailEditingController.text.isNotEmpty &&
                           pwdEditingController.text.isNotEmpty) {
+                            final loginController = LoginController();
+                            final email = emailEditingController.text;
+                            final password = pwdEditingController.text;
+                            await loginController.login(
+                              email,
+                              password,
+                              context,
+                              router,
+                              profesoresCubit,
+                            );
                         //Call sign in method of firebase & open home screen based on successfull login
-                        _login(
+                        /* _login(
                             emailEditingController.text,
                             pwdEditingController.text,
                             context,
                             router,
-                            profesoresCubit);
+                            profesoresCubit); */
                       }
                     },
                     text: 'Ingresar'),

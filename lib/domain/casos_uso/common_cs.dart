@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:proyect_flutter/controller/login_controller.dart';
 import 'package:proyect_flutter/domain/casos_uso/profesor_casos_uso/profesor_cs.dart';
 
 import '../../ui/bloc/bd_cursos.dart';
@@ -134,6 +135,39 @@ class CommonCs {
       print('Error al obtener profesores: $e');
     }
   }
+
+    Future<void> obtenerProfesorDesdePrefs() async {
+      final rolCubit = context.read<RolCubit>();
+      rolCubit.actualizarRol("profesor");
+
+      final profesorCubit = context.read<ProfesorCubit>();
+
+      try {
+        final loginController = LoginController();
+        final data = await loginController.getUserData();
+        if (data == null) {
+          throw Exception('No hay sesión iniciada.');
+        }
+
+        final profesor = Profesor(
+          id: data['id'],
+          nombre: data['nombre'],
+          email: data['email'],
+          bio: data['bio'],
+          avatar: data['avatar'],
+        );
+
+        profesorCubit.actualizarProfesor(profesor);
+
+        if (context.read<BDCursosCubit>().state.isEmpty) {
+          await _fetchCursos();
+        }
+
+        await fetchProfesores();
+      } catch (e) {
+        print("Error al obtener datos del profesor: $e");
+      }
+    }
 
   Future<void> _fetchCursoYUnidad(int cursoId) async {
     /* forma local */
