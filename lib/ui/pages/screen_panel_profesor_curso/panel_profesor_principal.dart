@@ -1,3 +1,5 @@
+import 'package:proyect_flutter/controller/login_controller.dart';
+
 import '../../../domain/casos_uso/common_cs.dart';
 import '../../../domain/casos_uso/curso_casos_uso/curso_cs.dart';
 import '../../../domain/casos_uso/profesor_casos_uso/profesor_cs.dart';
@@ -29,7 +31,6 @@ class _PanelPrincipalProfesorScreenState
   bool _isLoading = true;
   bool _isInitialized = false; // Variable para controlar el estado de carga
 
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -41,16 +42,29 @@ class _PanelPrincipalProfesorScreenState
     }
   }
 
+  Future<bool> verificarSesion() async {
+    final loginController = LoginController();
+    final data = await loginController.getUserData();
+
+    if (data == null) {
+      if (mounted) {
+        GoRouter.of(context).go('/iniciosesion');
+      }
+      return false;
+    }
+    return true;
+  }
+
   Future<void> _initializeData() async {
+    final sesionValida = await verificarSesion();
+    if (!sesionValida) return;
     final initData = CommonCs(
       cursosCasoUso: getIt<CursosCasoUso>(),
       profesorCasoUso: getIt<ProfesorCasoUso>(),
       context: context,
     );
-
-
-    await initData.obtenerProfesor(widget.profesorId);
-
+    /* await initData.obtenerProfesor(widget.profesorId); */
+    await initData.obtenerProfesorDesdePrefs();
     _simularCarga();
   }
 
