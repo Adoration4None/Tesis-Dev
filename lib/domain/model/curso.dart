@@ -127,8 +127,6 @@ class Curso {
     );
   }
 
-
-
   List<Actividad> obtenerTodasActividadesCurso(List<Unidad>? unidades) {
     List<Actividad> todasLasActividades = [];
     for (var i = 0; i < unidades!.length; i++) {

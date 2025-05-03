@@ -2013,7 +2013,6 @@ class CursosDataAdapter extends CursoRepository {
     /** BD FIREBASE */
 
     //CollectionReference cursosRef =
-
     CollectionReference unidadesRef =
     FirebaseFirestore.instance.collection('unidades');
 
@@ -2187,18 +2186,13 @@ class CursosDataAdapter extends CursoRepository {
 
     // se fija el curso para formatearlo y enviarlo a firebase (unidades y actividades)
     await firebaseService.subirUnidadesFB(curso);
-
   }
-
-
 
   @override
   Future<Curso> getCursoById(String id) {
     // TODO: implement getCursoById
     throw UnimplementedError();
   }
-
-
 
   @override
   Future<void> guardarSeguimientos(List<Seguimiento> seguimientos) async {
@@ -2223,9 +2217,7 @@ class CursosDataAdapter extends CursoRepository {
     final firebaseService =
     FirebaseService(firestore: FirebaseFirestore.instance);
     await firebaseService.eliminarActividadFB(cursoId, actividadId);
-
   }
-
 
   @override
   Future<void> subirSeguimientosActividadCuestionario(
@@ -2234,9 +2226,7 @@ class CursosDataAdapter extends CursoRepository {
     final firebaseService =
     FirebaseService(firestore: FirebaseFirestore.instance);
     await firebaseService.subirSeguimientosActividadCuestionarioFB(actividadCuestionarioSave, cursoId);
-
   }
-
 
   @override
   Future<void> subirActividadCuestionario(int unidadId,
@@ -2245,8 +2235,5 @@ class CursosDataAdapter extends CursoRepository {
     final firebaseService =
     FirebaseService(firestore: FirebaseFirestore.instance);
     await firebaseService.subirActividadCuestionarioFB(unidadId, actividadCuestionarioSave, cursoId);
-
-
-
   }
 }
