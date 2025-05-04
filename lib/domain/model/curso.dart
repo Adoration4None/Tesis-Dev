@@ -38,6 +38,46 @@ class Curso {
     this.unidades,
   });
 
+  factory Curso.fromJson(Map<String, dynamic> json) => Curso(
+    id: json['id'],
+    nombre: json['nombre'],
+    codigoAcceso: json['codigoAcceso'],
+    departamento: json['departamento'],
+    ciudad: json['ciudad'],
+    colegio: json['colegio'],
+    profesor: json['profesor'],
+    portada: json['portada'],
+    numEstudiantes: json['numEstudiantes'],
+    descripcion: json['descripcion'],
+    fechaCreacion: json['fechaCreacion'],
+    fechaFinalizacion: json['fechaFinalizacion'],
+    estado: json['estado'],
+    estudiantes: (json['estudiantes'] as List<dynamic>?)
+        ?.map((e) => Estudiante.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    unidades: (json['unidades'] as List<dynamic>?)
+        ?.map((u) => Unidad.fromJson(u as Map<String, dynamic>))
+        .toList(),
+  );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'nombre': nombre,
+    'codigoAcceso': codigoAcceso,
+    'departamento': departamento,
+    'ciudad': ciudad,
+    'colegio': colegio,
+    'profesor': profesor,
+    'portada': portada,
+    'numEstudiantes': numEstudiantes,
+    'descripcion': descripcion,
+    'fechaCreacion': fechaCreacion,
+    'fechaFinalizacion': fechaFinalizacion,
+    'estado': estado,
+    'estudiantes': estudiantes?.map((e) => e.toJson()).toList(),
+    'unidades': unidades?.map((u) => u.toJson()).toList(),
+  };
+  
   @override
   String toString() {
     return 'Curso: $id, $nombre, $codigoAcceso, $departamento, $ciudad, $colegio,$profesor, $portada, $numEstudiantes, $descripcion, $fechaCreacion, $fechaFinalizacion, $estado, $unidades';
@@ -58,10 +98,14 @@ class Curso {
       if (fechaCreacion != null) "fechaCreacion": fechaCreacion,
       if (fechaFinalizacion != null) "fechaFinalizacion": fechaFinalizacion,
       if (estado != null) "estado": estado,
-      if (estudiantes != null) "estudiantes": estudiantes?.map((estudiante) => estudiante.toFirestore()).toList(),
-      if (unidades != null) "unidades": unidades?.map((unidad) => unidad.toFirestore()).toList(),
+      if (estudiantes != null)
+        "estudiantes":
+            estudiantes?.map((estudiante) => estudiante.toFirestore()).toList(),
+      if (unidades != null)
+        "unidades": unidades?.map((unidad) => unidad.toFirestore()).toList(),
     };
   }
+
   factory Curso.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
     return Curso(
@@ -84,7 +128,6 @@ class Curso {
       unidades: (data['unidades'] as List<dynamic>?)
           ?.map((unidadData) => Unidad.fromFirestore(unidadData))
           .toList(),
-
     );
   }
 

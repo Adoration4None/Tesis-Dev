@@ -5,17 +5,38 @@ class Unidad {
   String? nombre;
   String? descripcion;
   String? estado;
-  List<Actividad>? actividades;
   int cursoId;
+  List<Actividad>? actividades;
 
-  Unidad(
-      {this.id,
-      this.nombre,
-      this.descripcion,
-      this.estado,
-      this.actividades,
-      required this.cursoId});
+  Unidad({
+    this.id,
+    this.nombre,
+    this.descripcion,
+    this.estado,
+    required this.cursoId,
+    this.actividades,
+  });
 
+  factory Unidad.fromJson(Map<String, dynamic> json) => Unidad(
+    id: json['id'],
+    nombre: json['nombre'],
+    descripcion: json['descripcion'],
+    estado: json['estado'],
+    cursoId: json['cursoId'],
+    actividades: (json['actividades'] as List<dynamic>?)
+        ?.map((a) => Actividad.fromJson(a as Map<String, dynamic>))
+        .toList(),
+  );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'nombre': nombre,
+    'descripcion': descripcion,
+    'estado': estado,
+    'cursoId': cursoId,
+    'actividades': actividades?.map((a) => a.toJson()).toList(),
+  };
+  
   // Método de fábrica para Firestore (toMap)
   factory Unidad.fromFirestore(Map<String, dynamic> data) {
     return Unidad(

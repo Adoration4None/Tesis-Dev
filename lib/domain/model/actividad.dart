@@ -1,4 +1,4 @@
-class Actividad {
+abstract class Actividad {
   int? id;
   String? nombre;
   String? descripcion;
@@ -17,6 +17,21 @@ class Actividad {
       this.pesoRespuestas,
       this.habilidades,
       this.pista});
+
+  factory Actividad.fromJson(Map<String, dynamic> json) {
+    switch (json['tipoActividad'] as String) {
+      case 'Cuestionario':
+        return ActividadCuestionario.fromJson(json);
+      case 'Laberinto':
+        return ActividadLaberinto.fromJson(json);
+      case 'Desconectada':
+        return ActividadDesconectada.fromJson(json);
+      default:
+        throw Exception('Actividad desconocida: ${json['tipoActividad']}');
+    }
+  }
+
+  Map<String, dynamic> toJson(); // Implementado en subclases
 
   factory Actividad.fromFirestore(Map<String, dynamic> data) {
     return Actividad(
