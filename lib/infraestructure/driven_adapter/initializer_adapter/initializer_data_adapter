@@ -5,17 +5,26 @@ import '/domain/repository/curso_repository.dart';
 
 class InitializerDataAdapter extends CursoRepository {
   final String _assetPath;
+  List<Curso>? _cache;
 
   InitializerDataAdapter({String assetPath = 'assets/initializer.json'})
       : _assetPath = assetPath;
 
-  @override
-  Future<List<Curso>> getCursos() async {
+  /// Carga once al inicio
+  Future<void> load() async {
+    if (_cache != null) return;
     final jsonStr = await rootBundle.loadString(_assetPath);
-    final List<dynamic> list = jsonDecode(jsonStr);
-    return list
+    final List<dynamic> arr = jsonDecode(jsonStr);
+    _cache = arr
         .map((e) => Curso.fromJson(e as Map<String, dynamic>))
         .toList();
+  }
+
+  /// Sólo devuelve los iniciales
+  @override
+  Future<List<Curso>> getCursos() async {
+    await load();
+    return _cache!;
   }
 
   @override

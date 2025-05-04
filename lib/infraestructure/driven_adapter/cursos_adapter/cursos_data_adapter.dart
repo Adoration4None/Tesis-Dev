@@ -13,27 +13,29 @@ import '/domain/model/curso.dart';
 //import '/domain/model/respuesta.dart';
 import '/domain/model/seguimiento.dart';
 import '/domain/repository/curso_repository.dart';
+
 //import '/ui/bloc/bd_demo.dart';
 //import 'package:flutter/material.dart';
 //import 'package:flutter_bloc/flutter_bloc.dart';
 class CursosDataAdapter extends CursoRepository {
-  
   @override
   Future<List<Curso>> getCursos() async {
+    /*
     List<Curso> cursos = [];
     /* TODO: implement getCursos BD mientras sera por mapas */
     Curso c1 = Curso("LEER: Antes aquí se quemaba todo el curso, ahora requiero hacer la implementación de los cursos de inicialización desde el JSON");
 
     cursos.add(c1);
+    */
     /** BD FIREBASE */
 
     //CollectionReference cursosRef =
     CollectionReference unidadesRef =
-    FirebaseFirestore.instance.collection('unidades');
+        FirebaseFirestore.instance.collection('unidades');
 
     // Obtener los documentos de la colección
     QuerySnapshot querySnapshot =
-    await FirebaseFirestore.instance.collection('cursos').get();
+        await FirebaseFirestore.instance.collection('cursos').get();
 
     // Iterar sobre cada documento obtenido
     for (var doc in querySnapshot.docs) {
@@ -59,7 +61,7 @@ class CursosDataAdapter extends CursoRepository {
       );
       int cursoId = doc.get('id');
       QuerySnapshot querySnapshotUnidades =
-      await unidadesRef.where('cursoId', isEqualTo: cursoId).get();
+          await unidadesRef.where('cursoId', isEqualTo: cursoId).get();
       // Recorremos los documentos obtenidos de la consulta
 
       List<Unidad> unidadesModelo = [];
@@ -69,7 +71,7 @@ class CursosDataAdapter extends CursoRepository {
         List<dynamic> actividadesFBB = unidadFB['actividades'];
         // Convertir cada elemento de la lista a Map<String, dynamic>
         List<Map<String, dynamic>> actividadesFB =
-        actividadesFBB.map((actividad) {
+            actividadesFBB.map((actividad) {
           return actividad as Map<String, dynamic>;
         }).toList();
         //Instanciamos Actividades del Modelo
@@ -94,7 +96,7 @@ class CursosDataAdapter extends CursoRepository {
               estado: actividadFB['estado'],
               tipoActividad: actividadFB['tipoActividad'],
               pesoRespuestas:
-              converirAListaEnteros(actividadFB['pesoRespuestas']),
+                  converirAListaEnteros(actividadFB['pesoRespuestas']),
               habilidades: converirAListaEnteros(actividadFB['habilidades']),
               pista: actividadFB['pista'],
               nombreArchivo: actividadFB['nombreArchivo'],
@@ -114,7 +116,7 @@ class CursosDataAdapter extends CursoRepository {
               estado: actividadFB['estado'],
               tipoActividad: actividadFB['tipoActividad'],
               pesoRespuestas:
-              converirAListaEnteros(actividadFB['pesoRespuestas']),
+                  converirAListaEnteros(actividadFB['pesoRespuestas']),
               habilidades: converirAListaEnteros(actividadFB['habilidades']),
               pista: actividadFB['pista'],
               dimension: actividadFB['dimension'],
@@ -136,7 +138,7 @@ class CursosDataAdapter extends CursoRepository {
               estado: actividadFB['estado'],
               tipoActividad: actividadFB['tipoActividad'],
               pesoRespuestas:
-              converirAListaEnteros(actividadFB['pesoRespuestas']),
+                  converirAListaEnteros(actividadFB['pesoRespuestas']),
               habilidades: converirAListaEnteros(actividadFB['habilidades']),
               pista: actividadFB['pista'],
               ejercicioImage: actividadFB['ejercicioImage'],
@@ -155,7 +157,7 @@ class CursosDataAdapter extends CursoRepository {
       //print('Mapapa $unidadesFB');
       //organizar unidades
       List<Unidad> unidadesOrganizadas =
-      List<Unidad>.filled(3, Unidad(cursoId: 1));
+          List<Unidad>.filled(3, Unidad(cursoId: 1));
       for (var unidad in unidadesModelo) {
         if (unidad.nombre == 'Unidad \nDiagnóstico') {
           unidadesOrganizadas[0] = unidad;
@@ -195,7 +197,7 @@ class CursosDataAdapter extends CursoRepository {
   Future<void> guardarCurso(Curso curso) async {
     // Instanciar el servicio de Firestore
     final firebaseService =
-    FirebaseService(firestore: FirebaseFirestore.instance);
+        FirebaseService(firestore: FirebaseFirestore.instance);
     await firebaseService.subirCursoFB(curso);
 
     // se fija el curso para formatearlo y enviarlo a firebase (unidades y actividades)
@@ -210,44 +212,42 @@ class CursosDataAdapter extends CursoRepository {
 
   @override
   Future<void> guardarSeguimientos(List<Seguimiento> seguimientos) async {
-
     final firebaseService =
-    FirebaseService(firestore: FirebaseFirestore.instance);
+        FirebaseService(firestore: FirebaseFirestore.instance);
     await firebaseService.guardarSeguimientosFB(seguimientos);
   }
 
   @override
   Future<void> eliminarRespuestaActividadSeguimiento(
       int cursoId, int actividadId) async {
-
     final firebaseService =
-    FirebaseService(firestore: FirebaseFirestore.instance);
-    await firebaseService.eliminarRespuestaActividadSeguimientoFB(cursoId, actividadId);
+        FirebaseService(firestore: FirebaseFirestore.instance);
+    await firebaseService.eliminarRespuestaActividadSeguimientoFB(
+        cursoId, actividadId);
   }
 
   @override
   Future<void> eliminarActividad(int cursoId, int actividadId) async {
-
     final firebaseService =
-    FirebaseService(firestore: FirebaseFirestore.instance);
+        FirebaseService(firestore: FirebaseFirestore.instance);
     await firebaseService.eliminarActividadFB(cursoId, actividadId);
   }
 
   @override
   Future<void> subirSeguimientosActividadCuestionario(
       ActividadCuestionario actividadCuestionarioSave, int cursoId) async {
-
     final firebaseService =
-    FirebaseService(firestore: FirebaseFirestore.instance);
-    await firebaseService.subirSeguimientosActividadCuestionarioFB(actividadCuestionarioSave, cursoId);
+        FirebaseService(firestore: FirebaseFirestore.instance);
+    await firebaseService.subirSeguimientosActividadCuestionarioFB(
+        actividadCuestionarioSave, cursoId);
   }
 
   @override
   Future<void> subirActividadCuestionario(int unidadId,
       ActividadCuestionario actividadCuestionarioSave, int cursoId) async {
-
     final firebaseService =
-    FirebaseService(firestore: FirebaseFirestore.instance);
-    await firebaseService.subirActividadCuestionarioFB(unidadId, actividadCuestionarioSave, cursoId);
+        FirebaseService(firestore: FirebaseFirestore.instance);
+    await firebaseService.subirActividadCuestionarioFB(
+        unidadId, actividadCuestionarioSave, cursoId);
   }
 }

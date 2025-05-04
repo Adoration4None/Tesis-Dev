@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:proyect_flutter/infraestructure/driven_adapter/initializer_adapter/initializer_data_adapter.';
 import 'package:proyect_flutter/ui/bloc/actividad_custio_test.dart';
 import 'package:proyect_flutter/ui/bloc/bd_cursos.dart';
 import 'package:proyect_flutter/ui/bloc/bd_demo.dart';
@@ -71,13 +72,21 @@ void setupDependencies() {
   getIt.registerSingleton<ProfesorCasoUso>(ProfesorCasoUso());
 }
 
-
 Future<void> main() async {
   setupDependencies();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // 1) Registrar y precargar el Initializer
+  final initializer = InitializerDataAdapter();
+  await initializer.load(); // carga una vez desde assets/initializer.json
+  getIt.registerSingleton<InitializerDataAdapter>(initializer);
+
+  //final iniciales = await initializer.getCursos();
+  // p.ej.: context.read<BDCursosCubit>().subirCursos(iniciales);
+
   runApp(const MyApp());
 }
 
