@@ -63,6 +63,7 @@ class ActividadDesconectada extends Actividad {
     );
   }
 
+@override
   Map<String, dynamic> toFirestore() {
     return {
       if (id != null) "id": id,

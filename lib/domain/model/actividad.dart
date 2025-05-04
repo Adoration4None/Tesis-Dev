@@ -1,3 +1,7 @@
+import 'package:proyect_flutter/domain/model/actividad_cuestionario.dart';
+import 'package:proyect_flutter/domain/model/actividad_desconectada.dart';
+import 'package:proyect_flutter/domain/model/actividad_laberinto.dart';
+
 abstract class Actividad {
   int? id;
   String? nombre;
@@ -33,6 +37,7 @@ abstract class Actividad {
 
   Map<String, dynamic> toJson(); // Implementado en subclases
 
+  /*
   factory Actividad.fromFirestore(Map<String, dynamic> data) {
     return Actividad(
       id: data['id'],
@@ -45,6 +50,20 @@ abstract class Actividad {
       pista: data['pista'],
     );
   }
+  */
+
+  factory Actividad.fromFirestore(Map<String, dynamic> data) {
+    switch (data['tipoActividad'] as String) {
+      case 'Cuestionario':
+        return ActividadCuestionario.fromFirestore(data);
+      case 'Laberinto':
+        return ActividadLaberinto.fromFirestore(data);
+      case 'Desconectada':
+        return ActividadDesconectada.fromFirestore(data);
+      default:
+        throw Exception('Actividad desconocida en Firestore: ${data['tipoActividad']}');
+    }
+  }
 
   Map<String, dynamic> toFirestore() {
     return {
@@ -56,39 +75,6 @@ abstract class Actividad {
       "pesoRespuestas": pesoRespuestas,
       "habilidades": habilidades,
       "pista": pista,
-    };
-  }
-
-  // Nuevo método de fábrica para JSON (consumido desde el backend)
-  factory Actividad.fromJson(Map<String, dynamic> json) {
-    return Actividad(
-      id: json['id'],
-      nombre: json['nombre'],
-      descripcion: json['descripcion'],
-      estado: json['estado'],
-      tipoActividad: json['tipoActividad'],
-      // Convertimos la lista a List<int> si existe
-      pesoRespuestas: json['pesoRespuestas'] != null
-          ? List<int>.from(json['pesoRespuestas'])
-          : null,
-      habilidades: json['habilidades'] != null
-          ? List<int>.from(json['habilidades'])
-          : null,
-      pista: json['pista'],
-    );
-  }
-
-  // Método para convertir la instancia a JSON al enviar datos al backend
-  Map<String, dynamic> toJson() {
-    return {
-      if (id != null) 'id': id,
-      'nombre': nombre,
-      'descripcion': descripcion,
-      'estado': estado,
-      'tipoActividad': tipoActividad,
-      'pesoRespuestas': pesoRespuestas,
-      'habilidades': habilidades,
-      'pista': pista,
     };
   }
 }

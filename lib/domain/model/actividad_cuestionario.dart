@@ -47,9 +47,6 @@ class ActividadCuestionario extends Actividad {
         dimension: json['dimension'],
         casillas:
             json['casillas'] != null ? List<int>.from(json['casillas']) : null,
-        respuestas: json['respuestas'] != null
-            ? List<dynamic>.from(json['respuestas'])
-            : null,
         respuestas: (json['respuestas'] as List<dynamic>?)
             ?.map((r) => List<dynamic>.from(r as List<dynamic>))
             .toList(),
@@ -99,6 +96,7 @@ class ActividadCuestionario extends Actividad {
     );
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     return {
       if (id != null) "id": id,
