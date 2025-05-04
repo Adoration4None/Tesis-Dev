@@ -78,6 +78,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/data/
     - assets/items/
     - assets/items/ejemplosImg/
     - assets/items/estudio/

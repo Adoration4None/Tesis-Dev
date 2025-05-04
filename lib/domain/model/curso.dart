@@ -38,12 +38,10 @@ class Curso {
     this.unidades,
   });
 
-
   @override
   String toString() {
     return 'Curso: $id, $nombre, $codigoAcceso, $departamento, $ciudad, $colegio,$profesor, $portada, $numEstudiantes, $descripcion, $fechaCreacion, $fechaFinalizacion, $estado, $unidades';
   }
-
 
   Map<String, dynamic> toFirestore() {
     return {

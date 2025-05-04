@@ -1,4 +1,3 @@
-//clase estudiante
 class Estudiante {
   int? id;
   String? nombre;
@@ -7,7 +6,20 @@ class Estudiante {
 
   Estudiante({this.id, this.nombre, this.avatar, this.genero});
 
-// To Map
+  factory Estudiante.fromJson(Map<String, dynamic> json) => Estudiante(
+    id: json['id'],
+    nombre: json['nombre'],
+    avatar: json['avatar'],
+    genero: json['genero'],
+  );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'nombre': nombre,
+    'avatar': avatar,
+    'genero': genero,
+  };
+
   factory Estudiante.fromFirestore(Map<String, dynamic> data) {
     return Estudiante(
       id: data['id'],

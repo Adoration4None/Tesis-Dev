@@ -47,8 +47,6 @@ class Respuesta {
     };
   }
 
-
-
   factory Respuesta.fromJson(respuesta) {
     return Respuesta(
       id: respuesta['id'],
@@ -57,6 +55,5 @@ class Respuesta {
       actividadId: respuesta['actividadId'],
       seguimientoId: respuesta['seguimientoId'],
     );
-
   }
 }

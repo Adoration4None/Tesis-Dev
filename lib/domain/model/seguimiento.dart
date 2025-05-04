@@ -36,7 +36,6 @@ class Seguimiento {
     );
   }
 
-
   Map<String, dynamic> toFirestore() {
     return {
       if (id != null) "id": id,
