@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Profesor {
+  final String? token;
   int? id;
   String? nombre;
   String? email;
@@ -9,6 +10,7 @@ class Profesor {
   String? bio;
 
   Profesor({
+    this.token,
     this.id,
     this.nombre,
     this.email,
@@ -59,6 +61,27 @@ class Profesor {
       nombre: json['nombre'],
       email: json['email'],
       password: json['password'],
+      avatar: json['avatar'],
+      bio: json['bio'],
+    );
+  }
+
+  factory Profesor.fromLoginJson(Map<String, dynamic> json) {
+    return Profesor(
+      token: json['token'],
+      id: json['id'],
+      nombre: json['nombre'],
+      email: json['email'],
+      avatar: json['avatar'],
+      bio: json['bio'],
+    );
+  }
+
+    factory Profesor.fromJsonList(Map<String, dynamic> json) {
+    return Profesor(
+      id: json['id'],
+      nombre: json['nombre'],
+      email: json['email'],
       avatar: json['avatar'],
       bio: json['bio'],
     );

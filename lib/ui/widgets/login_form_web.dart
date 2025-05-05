@@ -1,3 +1,5 @@
+import 'package:proyect_flutter/controller/login_controller.dart';
+
 import '../../domain/casos_uso/common_cs.dart';
 import '../../domain/casos_uso/curso_casos_uso/curso_cs.dart';
 import '../../domain/casos_uso/profesor_casos_uso/profesor_cs.dart';
@@ -141,13 +143,23 @@ class _LoginFormState extends State<LoginForm> {
                     onPressed: () async {
                       if (emailEditingController.text.isNotEmpty &&
                           pwdEditingController.text.isNotEmpty) {
+                            final loginController = LoginController();
+                            final email = emailEditingController.text;
+                            final password = pwdEditingController.text;
+                            await loginController.login(
+                              email,
+                              password,
+                              context,
+                              router,
+                              profesoresCubit,
+                            );
                         //Call sign in method of firebase & open home screen based on successfull login
-                        _login(
+                        /* _login(
                             emailEditingController.text,
                             pwdEditingController.text,
                             context,
                             router,
-                            profesoresCubit);
+                            profesoresCubit); */
                       }
                     },
                     text: 'Ingresar'),

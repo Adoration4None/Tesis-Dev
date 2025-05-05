@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:proyect_flutter/data/http_adapter/profesor_http_adapter.dart';
 import '/constants/styles.dart';
 import '/domain/casos_uso/profesor_casos_uso/profesor_cs.dart';
 import '/domain/model/profesor.dart';
@@ -311,7 +312,7 @@ class RegistroFormWebState extends State<RegistroFormWeb> {
                       );
 
                       // Crear el usuario en Firebase Authentication
-                      _register(profesor);
+                      _register(profesor, router);
 
 
                       // Actualizar el estado del objeto profesor
@@ -323,7 +324,6 @@ class RegistroFormWebState extends State<RegistroFormWeb> {
 
                       // Navegar a la siguiente pantalla
                       /* router.go('/crearcursobienvenida'); */
-                      router.go('/iniciosesion');
                     }
                   },
                   text: 'Registrarse',
@@ -339,39 +339,23 @@ class RegistroFormWebState extends State<RegistroFormWeb> {
     );
   }
 
-/* Future<void> _register(Profesor profesor) async {
+  Future<void> _register(Profesor profesor, GoRouter router) async {
     try {
-      UserCredential userCredential =
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: profesor.email!,
-        password: profesor.password!,
+      final profesorHttpAdapter = ProfesorHttpAdapter();
+      await profesorHttpAdapter.crearProfesorHttp(profesor);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('¡Te has registrado exitosamente!')),
       );
-      CollectionReference profesorRef =
-      FirebaseFirestore.instance.collection('profesores');
-      Map<String, dynamic> data = {
-        'id': profesor.id,
-        'nombre': profesor.nombre,
-        'email': profesor.email,
-        'password': profesor.password,
-        'avatar': profesor.avatar,
-        'bio': profesor.bio,
-      };
-
-      // Agregar el documento a la colección
-      profesorRef.add(data);
+      router.go('/iniciosesion');
     } catch (e) {
-      print('Error desconocido: $e');
+      String errorMsg = 'Ocurrió un error inesperado.';
+      if (e.toString().contains("Correo ya registrado")) {
+        errorMsg = 'El correo electrónico ya está en uso.';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMsg)),
+      );
     }
-  } */
-
-  Future<void> _register(Profesor profesor) async {
-    try {
-      await profesorCasoUso.crearProfesor(profesor);
-      print("Profesor registrado en backend");
-    } catch (e) {
-      print("Error al registrar en backend: $e");
-    }
-
   }
 
   void _selectAvatar(String avatarPath) {
