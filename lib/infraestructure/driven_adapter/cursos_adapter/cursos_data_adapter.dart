@@ -20,8 +20,9 @@ import '/domain/repository/curso_repository.dart';
 class CursosDataAdapter extends CursoRepository {
   @override
   Future<List<Curso>> getCursos() async {
-    /*
+    
     List<Curso> cursos = [];
+    /*
     /* TODO: implement getCursos BD mientras sera por mapas */
     Curso c1 = Curso("LEER: Antes aquí se quemaba todo el curso, ahora requiero hacer la implementación de los cursos de inicialización desde el JSON");
 
