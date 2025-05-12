@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:proyect_flutter/domain/repository/profesor_respository.dart';
 import 'package:proyect_flutter/infraestructure/driven_adapter/initializer_adapter/initializer_data_adapter.';
 import 'package:proyect_flutter/ui/bloc/actividad_custio_test.dart';
 import 'package:proyect_flutter/ui/bloc/bd_cursos.dart';
@@ -66,10 +67,9 @@ void setupDependencies() {
   getIt.registerSingleton<UnidadCasoUso>(
       UnidadCasoUso(unidadRepository: getIt<UnidadRepository>()));
 
-// getIt.registerSingleton<ProfesorRepository>(ProfesorDataAdapter());
-//  getIt.registerSingleton<ProfesorCasoUso>(
-//      ProfesorCasoUso(profesorRepository: getIt<ProfesorRepository>()));
-  getIt.registerSingleton<ProfesorCasoUso>(ProfesorCasoUso());
+  getIt.registerSingleton<ProfesorRepository>(ProfesorDataAdapter());
+  getIt.registerSingleton<ProfesorCasoUso>(
+      ProfesorCasoUso(profesorRepository: getIt<ProfesorRepository>()));
 }
 
 Future<void> main() async {

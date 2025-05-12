@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:proyect_flutter/data/http_adapter/profesor_http_adapter.dart';
+import 'package:proyect_flutter/infraestructure/driven_adapter/profesor_adapter/profesor_data_adapter.dart';
 import '/constants/styles.dart';
 import '/domain/casos_uso/profesor_casos_uso/profesor_cs.dart';
 import '/domain/model/profesor.dart';
@@ -11,8 +11,6 @@ import '/ui/widgets/PopUp.dart';
 import '../utils/rutasImagenes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class RegistroFormWeb extends StatefulWidget {
   const RegistroFormWeb({Key? key}) : super(key: key);
@@ -341,8 +339,8 @@ class RegistroFormWebState extends State<RegistroFormWeb> {
 
   Future<void> _register(Profesor profesor, GoRouter router) async {
     try {
-      final profesorHttpAdapter = ProfesorHttpAdapter();
-      await profesorHttpAdapter.crearProfesorHttp(profesor);
+      final profesorDataAdapter = ProfesorDataAdapter();
+      await profesorDataAdapter.crearProfesor(profesor);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('¡Te has registrado exitosamente!')),
       );

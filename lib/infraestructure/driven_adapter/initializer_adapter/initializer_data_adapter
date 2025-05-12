@@ -1,58 +1,29 @@
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import '/domain/model/curso.dart';
-import '/domain/repository/curso_repository.dart';
+import '/domain/model/profesor.dart';
 
-class InitializerDataAdapter extends CursoRepository {
+class InitializerDataAdapter {
   final String _assetPath;
-  List<Curso>? _cache;
+  List<Curso>? _cacheCurso;
+  List<Profesor>? _cacheProfesor;
 
-  InitializerDataAdapter({String assetPath = 'assets/initializer.json'})
+  InitializerDataAdapter({String assetPath = 'assets/data/initializer.json'})
       : _assetPath = assetPath;
 
   /// Carga once al inicio
   Future<void> load() async {
-    if (_cache != null) return;
+    if (_cacheCurso != null || _cacheProfesor != null) return;
     final jsonStr = await rootBundle.loadString(_assetPath);
-    final List<dynamic> arr = jsonDecode(jsonStr);
-    _cache = arr
+    final data = jsonDecode(jsonStr);
+    final List<dynamic> arrCurso = data["cursoDemo"];
+    final List<dynamic> arrProfesor = data["profesorDemo"];
+    _cacheCurso = arrCurso
         .map((e) => Curso.fromJson(e as Map<String, dynamic>))
+        .toList();
+    _cacheProfesor = arrProfesor
+        .map((e) => Profesor.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
-  /// Sólo devuelve los iniciales
-  @override
-  Future<List<Curso>> getCursos() async {
-    await load();
-    return _cache!;
-  }
-
-  @override
-  Future<Curso> getCursoById(String id) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> guardarCurso(c) =>
-      throw UnimplementedError();
-
-  @override
-  Future<void> guardarSeguimientos(List s) =>
-      throw UnimplementedError();
-
-  @override
-  Future<void> eliminarRespuestaActividadSeguimiento(int c, int a) =>
-      throw UnimplementedError();
-
-  @override
-  Future<void> eliminarActividad(int c, int a) =>
-      throw UnimplementedError();
-
-  @override
-  Future<void> subirSeguimientosActividadCuestionario(a, c) =>
-      throw UnimplementedError();
-
-  @override
-  Future<void> subirActividadCuestionario(int u, a, c) =>
-      throw UnimplementedError();
 }

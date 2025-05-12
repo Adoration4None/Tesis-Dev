@@ -1,10 +1,10 @@
+import 'package:proyect_flutter/infraestructure/driven_adapter/profesor_adapter/profesor_data_adapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/model/profesor.dart';
-import '../../data/http_adapter/profesor_http_adapter.dart';
 import '../ui/bloc/profesor_bloc.dart';
 
 class LoginController {
@@ -43,13 +43,13 @@ class LoginController {
     GoRouter router,
     List<Profesor> profesoresCubit,
   ) async {
-    final profesorHttpAdapter = ProfesorHttpAdapter();
+    final profesorDataAdapter = ProfesorDataAdapter();
     final profesorCubit = context.read<ProfesorCubit>();
       profesorCubit.actualizarProfesor(
           profesoresCubit.firstWhere((element) => element.email == email));
 
       try {
-        final profesor = await profesorHttpAdapter.loginHttp(email, password);
+        final profesor = await profesorDataAdapter.loginHttp(email, password);
 
         if (profesor != null) {
           await saveUserData({

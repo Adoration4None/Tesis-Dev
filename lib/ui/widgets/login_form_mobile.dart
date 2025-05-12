@@ -178,7 +178,7 @@ class LoginFormMobile extends StatelessWidget {
     );
   }
 
-  Future<void> _login(
+  /* Future<void> _login(
       String email,
       String password,
       BuildContext context,
@@ -213,5 +213,5 @@ class LoginFormMobile extends StatelessWidget {
         content: Text('Ups! Algo salio mal, intentalo de nuevo.'),
       ));
     }
-  }
+  } */
 }
