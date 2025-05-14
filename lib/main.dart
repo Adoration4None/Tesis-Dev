@@ -32,31 +32,8 @@ import 'infraestructure/driven_adapter/cursos_adapter/cursos_data_adapter.dart';
 import 'infraestructure/driven_adapter/profesor_adapter/profesor_data_adapter.dart';
 import 'infraestructure/driven_adapter/unidad_adapter/unidad_data_adapter.dart';
 
-/**
- * Bienvenidos a MundoPC
- */
-
 final getIt = GetIt.instance;
 
-/*
-void setupDependencies() {
-  // Registra tus dependencias con las nuevas implementaciones
-  getIt.registerSingleton<CursoRepository>(CursosHttpAdapter());
-  getIt.registerSingleton<CursosCasoUso>(
-      CursosCasoUso(cursoRepository: getIt<CursoRepository>()));
-
-  getIt.registerSingleton<UnidadRepository>(UnidadHttpAdapter());
-  getIt.registerSingleton<UnidadCasoUso>(
-      UnidadCasoUso(getIt<UnidadRepository>()));
-
-  getIt.registerSingleton<ProfesorRepository>(ProfesorHttpAdapter());
-  getIt.registerSingleton<ProfesorCasoUso>(
-      ProfesorCasoUso(profesorRepository: getIt<ProfesorRepository>()));
-
-  // Si implementás GrupoRepository vía HTTP
-  // getIt.registerSingleton<GrupoRepository>(GrupoHttpAdapter());
-}
-*/
 
 void setupDependencies() {
   getIt.registerSingleton<CursoRepository>(CursosDataAdapter());
@@ -152,3 +129,23 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+/*
+void setupDependencies() {
+  // Registra tus dependencias con las nuevas implementaciones
+  getIt.registerSingleton<CursoRepository>(CursosHttpAdapter());
+  getIt.registerSingleton<CursosCasoUso>(
+      CursosCasoUso(cursoRepository: getIt<CursoRepository>()));
+
+  getIt.registerSingleton<UnidadRepository>(UnidadHttpAdapter());
+  getIt.registerSingleton<UnidadCasoUso>(
+      UnidadCasoUso(getIt<UnidadRepository>()));
+
+  getIt.registerSingleton<ProfesorRepository>(ProfesorHttpAdapter());
+  getIt.registerSingleton<ProfesorCasoUso>(
+      ProfesorCasoUso(profesorRepository: getIt<ProfesorRepository>()));
+
+  // Si implementás GrupoRepository vía HTTP
+  // getIt.registerSingleton<GrupoRepository>(GrupoHttpAdapter());
+}
+*/

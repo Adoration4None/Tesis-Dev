@@ -30,29 +30,7 @@ class Profesor {
     };
   }
 
-  void fromMap(Map<String, dynamic> data) {
-    id = data['id'];
-    nombre = data['nombre'];
-    email = data['email'];
-    password = data['password'];
-    avatar = data['avatar'];
-    bio = data['bio'];
-  }
-
-  // Método usado para Firestore
-  factory Profesor.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> snapshot,
-      ) {
-    final data = snapshot.data();
-    return Profesor(
-      id: data?['id'],
-      nombre: data?['nombre'],
-      email: data?['email'],
-      password: data?['password'],
-      avatar: data?['avatar'],
-      bio: data?['bio'],
-    );
-  }
+  
 
   // Nuevo método de fábrica para consumo vía REST (JSON)
   factory Profesor.fromJson(Map<String, dynamic> json) {
@@ -99,3 +77,28 @@ class Profesor {
     };
   }
 }
+/*
+void fromMap(Map<String, dynamic> data) {
+    id = data['id'];
+    nombre = data['nombre'];
+    email = data['email'];
+    password = data['password'];
+    avatar = data['avatar'];
+    bio = data['bio'];
+  }
+
+  // Método usado para Firestore
+  factory Profesor.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot,
+      ) {
+    final data = snapshot.data();
+    return Profesor(
+      id: data?['id'],
+      nombre: data?['nombre'],
+      email: data?['email'],
+      password: data?['password'],
+      avatar: data?['avatar'],
+      bio: data?['bio'],
+    );
+  }
+*/
