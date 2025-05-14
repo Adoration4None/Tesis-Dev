@@ -5,19 +5,20 @@ class Respuesta {
   int? actividadId;
   int? seguimientoId;
 
-  Respuesta(
-      {this.id,
-        this.respuestaUsuario,
-        this.peso,
-        this.actividadId,
-        this.seguimientoId});
+  Respuesta({
+    this.id,
+    this.respuestaUsuario,
+    this.peso,
+    this.actividadId,
+    this.seguimientoId,
+  });
 
   Respuesta copyWith(
       {int? id,
-        String? respuestaUsuario,
-        int? peso,
-        int? actividadId,
-        int? seguimientoId}) {
+      String? respuestaUsuario,
+      int? peso,
+      int? actividadId,
+      int? seguimientoId}) {
     return Respuesta(
         id: this.id,
         respuestaUsuario: respuestaUsuario ?? this.respuestaUsuario,
@@ -47,13 +48,24 @@ class Respuesta {
     };
   }
 
-  factory Respuesta.fromJson(respuesta) {
+  /// Crea una instancia de Respuesta a partir de un JSON (Map)
+  factory Respuesta.fromJson(Map<String, dynamic> json) {
     return Respuesta(
-      id: respuesta['id'],
-      respuestaUsuario: respuesta['respuestaUsuario'],
-      peso: respuesta['peso'],
-      actividadId: respuesta['actividadId'],
-      seguimientoId: respuesta['seguimientoId'],
+      id: json['id'] as int?,
+      respuestaUsuario: json['respuestaUsuario'] as String?,
+      peso: json['peso'] as int?,
+      actividadId: json['actividadId'] as int?,
+      seguimientoId: json['seguimientoId'] as int?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (id != null) 'id': id,
+      'respuestaUsuario': respuestaUsuario,
+      'peso': peso,
+      'actividadId': actividadId,
+      'seguimientoId': seguimientoId,
+    };
   }
 }

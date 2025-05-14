@@ -102,3 +102,82 @@ void fromMap(Map<String, dynamic> data) {
     );
   }
 */
+
+import '/domain/model/respuesta.dart';
+
+class Seguimiento {
+  int? id;
+  List<Respuesta>? respuestasActividades;
+  List<int>? test;
+  double? calificacion;
+  int? userId;
+  int? cursoId;
+
+  Seguimiento({
+    this.id,
+    this.respuestasActividades,
+    this.test,
+    this.calificacion,
+    this.userId,
+    this.cursoId,
+  });
+
+  /// Convierte un Map JSON en una instancia de Seguimiento
+  factory Seguimiento.fromJson(Map<String, dynamic> json) {
+    return Seguimiento(
+      id: json['id'],
+      calificacion: (json['calificacion'] as num?)?.toDouble(),
+      userId: json['userId'],
+      cursoId: json['cursoId'],
+      test: (json['test'] as List<dynamic>?)?.cast<int>(),
+      respuestasActividades: (json['respuestasActividades'] as List<dynamic>?)
+          ?.map((r) => Respuesta.fromJson(r as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  /// Convierte la instancia de Seguimiento a un Map JSON
+  Map<String, dynamic> toJson() {
+    return {
+      if (id != null) 'id': id,
+      if (calificacion != null) 'calificacion': calificacion,
+      if (userId != null) 'userId': userId,
+      if (cursoId != null) 'cursoId': cursoId,
+      if (test != null) 'test': test,
+      if (respuestasActividades != null)
+        'respuestasActividades':
+            respuestasActividades!.map((r) => r.toJson()).toList(),
+    };
+  }
+}
+
+
+class CursosDataAdapter extends CursoRepository {
+  final SeguimientoRepository seguimientoRepo;
+
+  CursosDataAdapter({ required this.seguimientoRepo });
+
+  @override
+  Future<void> guardarSeguimientos(List<Seguimiento> segs) async {
+    // Antes hacías: firebaseService.guardarSeguimientosFB(...)
+    // Ahora:
+    for (var s in segs) {
+      await seguimientoRepo.crearSeguimiento(s);
+    }
+  }
+
+  @override
+  Future<void> subirSeguimientosActividadCuestionario(
+      ActividadCuestionario actividad, int cursoId
+  ) async {
+    // Construye tu Seguimiento según la lógica de negocio
+    final nuevo = Seguimiento(
+      actividadId: actividad.id,
+      cursoId: cursoId,
+      // ...otros campos
+    );
+    await seguimientoRepo.crearSeguimiento(nuevo);
+  }
+
+  // ... deja intactas el resto de operaciones de CursoRepository
+}

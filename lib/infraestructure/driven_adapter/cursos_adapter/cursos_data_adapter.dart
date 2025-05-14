@@ -7,6 +7,7 @@ import '../../../domain/model/actividad_desconectada.dart';
 import '../../../domain/model/actividad_laberinto.dart';
 import '../../../domain/model/estudiante.dart';
 import '../../../domain/model/unidad.dart';
+import '../../../domain/repository/seguimiento_repository.dart';
 import '../../firebase/firebase_curso.dart';
 import '/domain/model/actividad.dart';
 import '/domain/model/curso.dart';
@@ -20,6 +21,8 @@ import '/domain/repository/curso_repository.dart';
 class CursosDataAdapter extends CursoRepository {
   @override
   Future<List<Curso>> getCursos() async {
+    
+    final SeguimientoRepository seguimientoRepo;
     
     List<Curso> cursos = [];
     /*
@@ -213,9 +216,9 @@ class CursosDataAdapter extends CursoRepository {
 
   @override
   Future<void> guardarSeguimientos(List<Seguimiento> seguimientos) async {
-    final firebaseService =
-        FirebaseService(firestore: FirebaseFirestore.instance);
-    await firebaseService.guardarSeguimientosFB(seguimientos);
+    for (var s in seguimientos) {
+      await seguimientoRepo.crearSeguimiento(s);
+    }
   }
 
   @override
