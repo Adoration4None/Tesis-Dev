@@ -111,11 +111,14 @@ class CommonCs {
 
       final querySnapshot = await ref.limit(1).get();
 
+/*
       final List<Profesor> profesores = querySnapshot.docs.map((doc) {
         final profesor = Profesor.fromFirestore(doc);
         return profesor;
       }).toList();
       profesorCubit.actualizarProfesor(profesores.first);
+*/
+
 /*
       Estudiante yoEstudiante = Estudiante(
           id: profesores.first.id,
