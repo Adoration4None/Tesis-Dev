@@ -7,6 +7,7 @@ import '../../../domain/model/actividad_desconectada.dart';
 import '../../../domain/model/actividad_laberinto.dart';
 import '../../../domain/model/estudiante.dart';
 import '../../../domain/model/unidad.dart';
+import '../../../domain/repository/seguimiento_repository.dart';
 import '../../firebase/firebase_curso.dart';
 import '/domain/model/actividad.dart';
 import '/domain/model/curso.dart';
@@ -18,6 +19,9 @@ import 'package:http/http.dart' as http;
 //import '/ui/bloc/bd_demo.dart';
 //import 'package:flutter/material.dart';
 //import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:get_it/get_it.dart';
+import '/domain/repository/seguimiento_repository.dart';
 class CursosDataAdapter extends CursoRepository {
 
   final String baseUrl = 'http://localhost:8080/cursos';
@@ -26,6 +30,7 @@ class CursosDataAdapter extends CursoRepository {
   @override
   Future<List<Curso>> getCursos() async {
     
+
     List<Curso> cursos = [];
     /*
     /* TODO: implement getCursos BD mientras sera por mapas */
@@ -238,10 +243,19 @@ class CursosDataAdapter extends CursoRepository {
 
   @override
   Future<void> guardarSeguimientos(List<Seguimiento> seguimientos) async {
-    final firebaseService =
-        FirebaseService(firestore: FirebaseFirestore.instance);
-    await firebaseService.guardarSeguimientosFB(seguimientos);
+    final seguimientoRepo = GetIt.instance<SeguimientoRepository>();
+
+    for (var seguimiento in seguimientos) {
+      try {
+        await seguimientoRepo.crearSeguimiento(seguimiento);
+        print("Seguimiento guardado: ${seguimiento.id}");
+      } catch (e) {
+        print("Error al guardar el seguimiento ${seguimiento.id}: $e");
+        throw Exception("Error al guardar el seguimiento ${seguimiento.id}");
+      }
+    }
   }
+
 
   @override
   Future<void> eliminarRespuestaActividadSeguimiento(
@@ -260,13 +274,30 @@ class CursosDataAdapter extends CursoRepository {
   }
 
   @override
-  Future<void> subirSeguimientosActividadCuestionario(
-      ActividadCuestionario actividadCuestionarioSave, int cursoId) async {
-    final firebaseService =
-        FirebaseService(firestore: FirebaseFirestore.instance);
-    await firebaseService.subirSeguimientosActividadCuestionarioFB(
-        actividadCuestionarioSave, cursoId);
+  Future<void> subirSeguimientosActividadCuestionario(ActividadCuestionario actividadCuestionarioSave, int cursoId) async {
+    // Accede al repo de seguimiento usando GetIt
+    final seguimientoRepo = GetIt.instance<SeguimientoRepository>();
+
+    try {
+      // El seguimiento viene en formato JSON desde el cliente
+      final seguimientoJson = actividadCuestionarioSave.toJson();
+
+      // Crea el objeto Seguimiento desde el JSON
+      final seguimiento = Seguimiento.fromJson(seguimientoJson);
+
+      // Asocia el cursoId con el seguimiento
+      seguimiento.cursoId = cursoId;
+
+      // Guarda el seguimiento en el repositorio
+      await seguimientoRepo.crearSeguimiento(seguimiento);
+
+      print("Seguimiento creado correctamente");
+    } catch (e) {
+      print("Error al subir el seguimiento: $e");
+      throw Exception("No se pudo subir el seguimiento");
+    }
   }
+
 
   @override
   Future<void> subirActividadCuestionario(int unidadId,
@@ -277,3 +308,29 @@ class CursosDataAdapter extends CursoRepository {
         unidadId, actividadCuestionarioSave, cursoId);
   }
 }
+
+
+/*
+@override
+  Future<void> guardarSeguimientos(List<Seguimiento> seguimientos) async {
+    final firebaseService =
+        FirebaseService(firestore: FirebaseFirestore.instance);
+    await firebaseService.guardarSeguimientosFB(seguimientos);
+  }
+
+  @override
+  Future<void> guardarSeguimientos(List<Seguimiento> seguimientos) async {
+    for (var s in seguimientos) {
+      await seguimientoRepo.crearSeguimiento(s);
+    }
+  }
+
+  @override
+  Future<void> subirSeguimientosActividadCuestionario(
+      ActividadCuestionario actividadCuestionarioSave, int cursoId) async {
+    final firebaseService =
+        FirebaseService(firestore: FirebaseFirestore.instance);
+    await firebaseService.subirSeguimientosActividadCuestionarioFB(
+        actividadCuestionarioSave, cursoId);
+  }
+*/

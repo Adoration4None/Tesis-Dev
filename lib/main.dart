@@ -6,7 +6,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:proyect_flutter/domain/repository/profesor_respository.dart';
+import 'package:proyect_flutter/domain/repository/seguimiento_repository.dart';
 import 'package:proyect_flutter/infraestructure/driven_adapter/initializer_adapter/initializer_data_adapter.dart';
+import 'package:proyect_flutter/infraestructure/driven_adapter/seguimientos_adapter/seguimiento_data_adapter.dart';
 import 'package:proyect_flutter/ui/bloc/actividad_custio_test.dart';
 import 'package:proyect_flutter/ui/bloc/bd_cursos.dart';
 import 'package:proyect_flutter/ui/bloc/bd_demo.dart';
@@ -23,6 +25,7 @@ import 'constants/styles.dart';
 
 import 'domain/casos_uso/curso_casos_uso/curso_cs.dart';
 import 'domain/casos_uso/profesor_casos_uso/profesor_cs.dart';
+import 'domain/casos_uso/seguimiento_casos_uso/seguimiento_cs.dart';
 import 'domain/casos_uso/unidad_casos_uso/unidad_cs.dart';
 import 'domain/repository/curso_repository.dart';
 /* import 'domain/repository/profesor_respository.dart'; */
@@ -32,33 +35,17 @@ import 'infraestructure/driven_adapter/cursos_adapter/cursos_data_adapter.dart';
 import 'infraestructure/driven_adapter/profesor_adapter/profesor_data_adapter.dart';
 import 'infraestructure/driven_adapter/unidad_adapter/unidad_data_adapter.dart';
 
-/**
- * Bienvenidos a MundoPC
- */
-
 final getIt = GetIt.instance;
 
-/*
 void setupDependencies() {
-  // Registra tus dependencias con las nuevas implementaciones
-  getIt.registerSingleton<CursoRepository>(CursosHttpAdapter());
-  getIt.registerSingleton<CursosCasoUso>(
-      CursosCasoUso(cursoRepository: getIt<CursoRepository>()));
+  /*
+  getIt.registerSingleton<SeguimientoRepository>(SeguimientoDataAdapter());
+  getIt.registerSingleton<SeguimientoCasoUso>(
+    SeguimientoCasoUso(repo: getIt<SeguimientoRepository>())
+  );
+  */
+  getIt.registerSingleton<SeguimientoRepository>(SeguimientoDataAdapter());
 
-  getIt.registerSingleton<UnidadRepository>(UnidadHttpAdapter());
-  getIt.registerSingleton<UnidadCasoUso>(
-      UnidadCasoUso(getIt<UnidadRepository>()));
-
-  getIt.registerSingleton<ProfesorRepository>(ProfesorHttpAdapter());
-  getIt.registerSingleton<ProfesorCasoUso>(
-      ProfesorCasoUso(profesorRepository: getIt<ProfesorRepository>()));
-
-  // Si implementás GrupoRepository vía HTTP
-  // getIt.registerSingleton<GrupoRepository>(GrupoHttpAdapter());
-}
-*/
-
-void setupDependencies() {
   getIt.registerSingleton<CursoRepository>(CursosDataAdapter());
   getIt.registerSingleton<CursosCasoUso>(
       CursosCasoUso(cursoRepository: getIt<CursoRepository>()));
@@ -152,3 +139,23 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+/*
+void setupDependencies() {
+  // Registra tus dependencias con las nuevas implementaciones
+  getIt.registerSingleton<CursoRepository>(CursosHttpAdapter());
+  getIt.registerSingleton<CursosCasoUso>(
+      CursosCasoUso(cursoRepository: getIt<CursoRepository>()));
+
+  getIt.registerSingleton<UnidadRepository>(UnidadHttpAdapter());
+  getIt.registerSingleton<UnidadCasoUso>(
+      UnidadCasoUso(getIt<UnidadRepository>()));
+
+  getIt.registerSingleton<ProfesorRepository>(ProfesorHttpAdapter());
+  getIt.registerSingleton<ProfesorCasoUso>(
+      ProfesorCasoUso(profesorRepository: getIt<ProfesorRepository>()));
+
+  // Si implementás GrupoRepository vía HTTP
+  // getIt.registerSingleton<GrupoRepository>(GrupoHttpAdapter());
+}
+*/
