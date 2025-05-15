@@ -13,11 +13,16 @@ import '/domain/model/curso.dart';
 //import '/domain/model/respuesta.dart';
 import '/domain/model/seguimiento.dart';
 import '/domain/repository/curso_repository.dart';
+import 'package:http/http.dart' as http;
 
 //import '/ui/bloc/bd_demo.dart';
 //import 'package:flutter/material.dart';
 //import 'package:flutter_bloc/flutter_bloc.dart';
 class CursosDataAdapter extends CursoRepository {
+
+  final String baseUrl = 'http://localhost:8080/cursos';
+
+/*
   @override
   Future<List<Curso>> getCursos() async {
     
@@ -177,6 +182,26 @@ class CursosDataAdapter extends CursoRepository {
     //cursos.add(Curso.fromFirestore(doc));
 
     return cursos;
+  }
+  */
+
+  @override
+  Future<List<Curso>> getCursos() async {
+    final response = await http.get(Uri.parse(baseUrl));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonList = jsonDecode(utf8.decode(response.bodyBytes));
+      final cursos = jsonList.map((e) =>  Curso.fromJson(e)).toList();
+
+      print('⚙️ Cursos obtenidos (${cursos.length}):');
+      for (final curso in cursos) {
+        print(' • [${curso.id}] ${curso.nombre}');
+      }
+
+    return cursos;
+    } else {
+      throw Exception('Error al obtener la lista de cursos');
+    }
   }
 
   List<dynamic> converirALista(String lista) {

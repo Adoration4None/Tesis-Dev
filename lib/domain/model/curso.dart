@@ -45,7 +45,9 @@ class Curso {
     departamento: json['departamento'],
     ciudad: json['ciudad'],
     colegio: json['colegio'],
-    profesor: json['profesor'],
+    profesor: (json['profesor'] is Map)
+        ? json['profesor']['id'] as int
+        : json['profesor'] as int,
     portada: json['portada'],
     numEstudiantes: json['numEstudiantes'],
     descripcion: json['descripcion'],
