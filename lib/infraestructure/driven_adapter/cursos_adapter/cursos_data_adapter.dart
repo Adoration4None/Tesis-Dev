@@ -196,19 +196,13 @@ class CursosDataAdapter extends CursoRepository {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(utf8.decode(response.bodyBytes));
-      final cursos = jsonList.map((e) =>  Curso.fromJson(e)).toList();
-
-      print('⚙️ Cursos obtenidos (${cursos.length}):');
-      for (final curso in cursos) {
-        print(' • [${curso.id}] ${curso.nombre}');
-      }
-
-    return cursos;
+      return jsonList.map((e) =>  Curso.fromJson(e)).toList();
     } else {
       throw Exception('Error al obtener la lista de cursos');
     }
   }
 
+/*
   List<dynamic> converirALista(String lista) {
     // Convertir el string de vuelta a una lista
     List<dynamic> newList;
@@ -222,7 +216,9 @@ class CursosDataAdapter extends CursoRepository {
     lista == "" ? newList = [] : newList = List<int>.from(jsonDecode(lista));
     return newList;
   }
+  */
 
+/*
   @override
   // Método para subir el objeto a Firestore
   Future<void> guardarCurso(Curso curso) async {
@@ -233,6 +229,22 @@ class CursosDataAdapter extends CursoRepository {
 
     // se fija el curso para formatearlo y enviarlo a firebase (unidades y actividades)
     await firebaseService.subirUnidadesFB(curso);
+  }
+  */
+
+  @override
+  Future<Curso> guardarCurso(Curso curso) async {
+    final response = await http.post(
+      Uri.parse(baseUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(curso.toJson()),
+    );
+
+    if (response.statusCode == 201) {
+      return Curso.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Error al crear el curso');
+    }
   }
 
   @override

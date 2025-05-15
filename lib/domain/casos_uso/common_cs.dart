@@ -32,6 +32,7 @@ class CommonCs {
     required this.context,
   });
 
+
   Future<void> obtenerCursosYProfesores() async {
     final cubitRol = context.read<RolCubit>();
     cubitRol.actualizarRol('estudiante');
@@ -40,6 +41,7 @@ class CommonCs {
       await _fetchCursos();
       await fetchProfesores();
 
+
 /*
       List<Seguimiento> seguimientosCursos =
           await fetchSeguimientosTodosCursos();
@@ -47,6 +49,7 @@ class CommonCs {
 */
     }
   }
+  
 
   Future<void> obtenerCursosYProfesoresYUnidades(int cursoId) async {
     if (context.read<RolCubit>().state.isEmpty) {

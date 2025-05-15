@@ -45,9 +45,7 @@ class Curso {
     departamento: json['departamento'],
     ciudad: json['ciudad'],
     colegio: json['colegio'],
-    profesor: (json['profesor'] is Map)
-        ? json['profesor']['id'] as int
-        : json['profesor'] as int,
+    profesor: (json['profesorId']),
     portada: json['portada'],
     numEstudiantes: json['numEstudiantes'],
     descripcion: json['descripcion'],
@@ -56,10 +54,7 @@ class Curso {
     estado: json['estado'],
     estudiantes: (json['estudiantes'] as List<dynamic>?)
         ?.map((e) => Estudiante.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    unidades: (json['unidades'] as List<dynamic>?)
-        ?.map((u) => Unidad.fromJson(u as Map<String, dynamic>))
-        .toList(),
+        .toList()
   );
 
   Map<String, dynamic> toJson() => {
@@ -69,21 +64,21 @@ class Curso {
     'departamento': departamento,
     'ciudad': ciudad,
     'colegio': colegio,
-    'profesor': profesor,
+    'profesorId': profesor,
     'portada': portada,
     'numEstudiantes': numEstudiantes,
     'descripcion': descripcion,
     'fechaCreacion': fechaCreacion,
     'fechaFinalizacion': fechaFinalizacion,
     'estado': estado,
-    'estudiantes': estudiantes?.map((e) => e.toJson()).toList(),
-    'unidades': unidades?.map((u) => u.toJson()).toList(),
+    'estudiantes': estudiantes?.map((e) => e.toJson()).toList()
   };
   
   @override
   String toString() {
     return 'Curso: $id, $nombre, $codigoAcceso, $departamento, $ciudad, $colegio,$profesor, $portada, $numEstudiantes, $descripcion, $fechaCreacion, $fechaFinalizacion, $estado, $unidades';
   }
+
 
   Map<String, dynamic> toFirestore() {
     return {
@@ -108,6 +103,7 @@ class Curso {
     };
   }
 
+/*
   factory Curso.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
     return Curso(
@@ -132,6 +128,7 @@ class Curso {
           .toList(),
     );
   }
+  */
 
   // copywith
   Curso copyWith({
