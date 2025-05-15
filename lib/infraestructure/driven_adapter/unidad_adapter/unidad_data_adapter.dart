@@ -5,7 +5,6 @@ import '/domain/repository/unidad_repository.dart';
 
 class UnidadDataAdapter extends UnidadRepository {
   final String baseUrl;
-
   UnidadDataAdapter({this.baseUrl = 'http://localhost:8080'});
 
   @override
@@ -17,8 +16,8 @@ class UnidadDataAdapter extends UnidadRepository {
       final List<dynamic> unidadesJson = jsonDecode(response.body);
       return unidadesJson.map((e) {
         // agregamos cursoId manualmente ya que no viene del backend
-        final unidad = Unidad.fromJson(e);
-        unidad.cursoId = idCurso;
+        final unidad = Unidad.fromJson(e as Map<String, dynamic>);
+        unidad.cursoId = idCurso; // por si el backend no lo envía
         return unidad;
 
       }).toList();

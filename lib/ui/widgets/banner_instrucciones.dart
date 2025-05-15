@@ -1,5 +1,3 @@
-//widget banner instrucciones
-
 import '/constants/styles.dart';
 import 'package:flutter/material.dart';
 

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:proyect_flutter/controller/login_controller.dart';
 import 'package:proyect_flutter/domain/casos_uso/profesor_casos_uso/profesor_cs.dart';
-
+import 'package:proyect_flutter/domain/casos_uso/unidad_casos_uso/unidad_cs.dart';
+import 'package:get_it/get_it.dart';
+import 'package:proyect_flutter/main.dart';
 import '../../ui/bloc/bd_cursos.dart';
 import '../../ui/bloc/bd_demo.dart';
 import '../../ui/bloc/curso_bloc.dart';
@@ -139,39 +141,41 @@ class CommonCs {
     }
   }
 
-    Future<void> obtenerProfesorDesdePrefs() async {
-      final rolCubit = context.read<RolCubit>();
-      rolCubit.actualizarRol("profesor");
+  Future<void> obtenerProfesorDesdePrefs() async {
+    final rolCubit = context.read<RolCubit>();
+    rolCubit.actualizarRol("profesor");
 
-      final profesorCubit = context.read<ProfesorCubit>();
+    final profesorCubit = context.read<ProfesorCubit>();
 
-      try {
-        final loginController = LoginController();
-        final data = await loginController.getUserData();
-        if (data == null) {
-          throw Exception('No hay sesión iniciada.');
-        }
-
-        final profesor = Profesor(
-          id: data['id'],
-          nombre: data['nombre'],
-          email: data['email'],
-          bio: data['bio'],
-          avatar: data['avatar'],
-        );
-
-        profesorCubit.actualizarProfesor(profesor);
-
-        if (context.read<BDCursosCubit>().state.isEmpty) {
-          await _fetchCursos();
-        }
-
-        await fetchProfesores();
-      } catch (e) {
-        print("Error al obtener datos del profesor: $e");
+    try {
+      final loginController = LoginController();
+      final data = await loginController.getUserData();
+      if (data == null) {
+        throw Exception('No hay sesión iniciada.');
       }
-    }
 
+      final profesor = Profesor(
+        id: data['id'],
+        nombre: data['nombre'],
+        email: data['email'],
+        bio: data['bio'],
+        avatar: data['avatar'],
+      );
+
+      profesorCubit.actualizarProfesor(profesor);
+
+      if (context.read<BDCursosCubit>().state.isEmpty) {
+        await _fetchCursos();
+      }
+
+      await fetchProfesores();
+    } catch (e) {
+      print("Error al obtener datos del profesor: $e");
+    }
+  }
+
+  /*
+  //ANTERIOR
   Future<void> _fetchCursoYUnidad(int cursoId) async {
     /* forma local */
 
@@ -184,6 +188,26 @@ class CommonCs {
     } catch (e) {
       // Manejo de errores, puedes mostrar un mensaje de error
       print('Error al obtener cursos: $e');
+    }
+  }
+  */
+
+  //VÍA HTTP
+  Future<void> _fetchCursoYUnidad(int cursoId) async {
+    try {
+      // 1) Obtener la lista de cursos y setear el curso actual (igualmente que antes)
+      final cursos = context.read<BDCursosCubit>().state;
+      final curso = cursos.firstWhere((c) => c.id == cursoId);
+      context.read<CursoCubit>().actualizarCurso(curso);
+
+      // 2) Consumir unidades vía HTTP
+      final unidadCasoUso = getIt<UnidadCasoUso>();
+      final unidades = await unidadCasoUso.getUnidades(cursoId);
+
+      // 3) Actualizar el cubit de unidades
+      context.read<UnidadesCubit>().subirUnidades(unidades);
+    } catch (e) {
+      print('Error al obtener unidades: $e');
     }
   }
 
@@ -232,7 +256,7 @@ class CommonCs {
   Future<void> subirGrupoCurso(Grupo grupo) async {
     // Referencia a la colección "productos" en Firestore
     CollectionReference productos =
-    FirebaseFirestore.instance.collection('grupos');
+        FirebaseFirestore.instance.collection('grupos');
 
     // Convertir el objeto Producto a un mapa
     Map<String, dynamic> data = grupo.toMap();
@@ -339,7 +363,7 @@ class CommonCs {
 
   Future<List<Seguimiento>> fetchSeguimientosTodosCursos() async {
     final curso =
-    context.read<BDCursosCubit>().state.firstWhere((c) => c.id == 1);
+        context.read<BDCursosCubit>().state.firstWhere((c) => c.id == 1);
     final unidades = curso.unidades;
     List<Actividad> actividades = [];
     // se recorre cada unidad y se pasa actividad a la lista
@@ -385,11 +409,11 @@ class CommonCs {
       int cursoId, String nombre, String descripcion) async {
     // Referencia a la colección en Firestore
     CollectionReference collectionRef =
-    FirebaseFirestore.instance.collection("cursos");
+        FirebaseFirestore.instance.collection("cursos");
 
     // Realizar la consulta para encontrar el documento con el campo específico
     QuerySnapshot querySnapshot =
-    await collectionRef.where('id', isEqualTo: cursoId).limit(1).get();
+        await collectionRef.where('id', isEqualTo: cursoId).limit(1).get();
 
     // Verificar si se encontraron documentos
     if (querySnapshot.docs.isNotEmpty) {
@@ -421,11 +445,11 @@ class CommonCs {
   Future<void> deleteDocumentByField(int cursoId) async {
     // Referencia a la colección en Firestore
     CollectionReference collectionRef =
-    FirebaseFirestore.instance.collection("cursos");
+        FirebaseFirestore.instance.collection("cursos");
 
     // Realizar la consulta para encontrar el documento con el campo específico
     QuerySnapshot querySnapshot =
-    await collectionRef.where('id', isEqualTo: cursoId).limit(1).get();
+        await collectionRef.where('id', isEqualTo: cursoId).limit(1).get();
 
     // Verificar si se encontraron documentos
     if (querySnapshot.docs.isNotEmpty) {
@@ -438,11 +462,11 @@ class CommonCs {
       // Elimina seguimientos relacionadas al curso
 
       CollectionReference collectionSegRef =
-      FirebaseFirestore.instance.collection("seguimientos");
+          FirebaseFirestore.instance.collection("seguimientos");
 
       // Realizar la consulta para encontrar el documento con el campo específico
       QuerySnapshot querySegSnapshot =
-      await collectionSegRef.where('cursoId', isEqualTo: cursoId).get();
+          await collectionSegRef.where('cursoId', isEqualTo: cursoId).get();
 
       if (querySegSnapshot.docs.isNotEmpty) {
         // Iterar a través de los documentos encontrados y eliminarlos
@@ -455,7 +479,7 @@ class CommonCs {
       // Elimina unidades relacionadas al curso
 
       CollectionReference collectionUnidadesRef =
-      FirebaseFirestore.instance.collection("unidades");
+          FirebaseFirestore.instance.collection("unidades");
 
       // Realizar la consulta para encontrar el documento con el campo específico
       QuerySnapshot queryUnidadesSnapshot = await collectionUnidadesRef
@@ -473,11 +497,11 @@ class CommonCs {
       // Elimina grupos relacionadas al curso
 
       CollectionReference collectionGruposRef =
-      FirebaseFirestore.instance.collection("grupos");
+          FirebaseFirestore.instance.collection("grupos");
 
       // Realizar la consulta para encontrar el documento con el campo específico
       QuerySnapshot queryGruposSnapshot =
-      await collectionGruposRef.where('cursoId', isEqualTo: cursoId).get();
+          await collectionGruposRef.where('cursoId', isEqualTo: cursoId).get();
 
       if (queryGruposSnapshot.docs.isNotEmpty) {
         // Iterar a través de los documentos encontrados y eliminarlos
@@ -491,8 +515,6 @@ class CommonCs {
     }
   }
 
-
-
   String convertirListaAStringPlano(List<dynamic> respuestas) {
     // Convertir la lista a un string
     String listAsString = jsonEncode(respuestas);
@@ -501,25 +523,16 @@ class CommonCs {
   }
 
   Future<void> eliminarActividadCs(int idActividad, int cursoId) async {
-
-
-    cursosCasoUso.eliminarActividadCs(
-        cursoId, idActividad);
+    cursosCasoUso.eliminarActividadCs(cursoId, idActividad);
 
     //borrar la actividad de unidades en la  base de datos
-
   }
 
-  Future<void> eliminarSeguimientosActividadCs(int idActividad, int cursoId) async {
-
-
+  Future<void> eliminarSeguimientosActividadCs(
+      int idActividad, int cursoId) async {
     //borrar en la base de datos
-    cursosCasoUso.eliminarRespuestaActividadSeguimientoCs(
-        cursoId, idActividad);
+    cursosCasoUso.eliminarRespuestaActividadSeguimientoCs(cursoId, idActividad);
 
     //borrar la actividad de unidades en la  base de datos
-
   }
-
-
 }
