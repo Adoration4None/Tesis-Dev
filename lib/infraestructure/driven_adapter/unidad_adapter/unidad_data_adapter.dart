@@ -4,12 +4,17 @@ import '/domain/model/unidad.dart';
 import '/domain/repository/unidad_repository.dart';
 
 class UnidadDataAdapter extends UnidadRepository {
-  final String baseUrl;
-  UnidadDataAdapter({this.baseUrl = 'http://localhost:8080'});
+
+  // lee de la variable de entorno de compilación
+  static const String _defaultUrl = 'http://localhost:8080';
+  final String baseUrl = const String.fromEnvironment(
+    'BASE_URL',
+    defaultValue: _defaultUrl,
+  );
 
   @override
   Future<List<Unidad>> getUnidades(int idCurso) async {
-    final uri = Uri.parse('$baseUrl/unidades?cursoId=$idCurso');
+    final uri = Uri.parse('$baseUrl/unidades/$idCurso');
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {

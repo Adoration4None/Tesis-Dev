@@ -5,6 +5,9 @@ FROM ghcr.io/cirruslabs/flutter:3.19.6 AS builder
 # Permite ejecutar flutter como root (necesario en Docker)
 ENV FLUTTER_ALLOW_ROOT=true
 
+# Argumento de build para variables de entorno dentro del código de la app
+ARG BASE_URL=http://localhost:8080
+
 # Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
@@ -13,7 +16,7 @@ COPY . .
 
 # Instala dependencias y genera la versión web optimizada
 RUN flutter pub get
-RUN flutter build web --release
+RUN flutter build web --release --dart-define=BASE_URL=$BASE_URL
 
 
 # Producción con NGINX --------------------------------------------------

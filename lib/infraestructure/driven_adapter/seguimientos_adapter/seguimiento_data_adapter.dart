@@ -4,14 +4,17 @@ import '/domain/model/seguimiento.dart';
 import '/domain/repository/seguimiento_repository.dart';
 
 class SeguimientoDataAdapter extends SeguimientoRepository {
-  final String _baseUrl;
 
-  SeguimientoDataAdapter({ String baseUrl = 'http://localhost:8080' })
-    : _baseUrl = baseUrl;
+    // lee de la variable de entorno de compilación
+  static const String _defaultUrl = 'http://localhost:8080';
+  final String baseUrl = const String.fromEnvironment(
+    'BASE_URL',
+    defaultValue: _defaultUrl,
+  );
 
   @override
   Future<List<Seguimiento>> getSeguimientos() async {
-    final resp = await http.get(Uri.parse('$_baseUrl/seguimientos')); //verificar que el back funcione biuen
+    final resp = await http.get(Uri.parse('$baseUrl/seguimientos')); //verificar que el back funcione biuen
     //final uri = Uri.parse('$_baseUrl/seguimientos');
     //final resp = await http.get(uri);
     if (resp.statusCode == 200) {
@@ -25,7 +28,7 @@ class SeguimientoDataAdapter extends SeguimientoRepository {
   @override
   Future<Seguimiento> crearSeguimiento(Seguimiento seguimiento) async {
     final resp = await http.post(
-      Uri.parse('$_baseUrl/seguimientos'),
+      Uri.parse('$baseUrl/seguimientos'),
       headers: { 'Content-Type': 'application/json' },
       body: jsonEncode(seguimiento.toJson())
     );

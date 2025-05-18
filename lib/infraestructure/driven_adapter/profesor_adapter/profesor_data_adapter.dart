@@ -5,7 +5,12 @@ import 'package:http/http.dart' as http;
 
 class ProfesorDataAdapter extends ProfesorRepository {
 
-  final String baseUrl = 'http://localhost:8080/profesores';
+  // lee de la variable de entorno de compilación
+  static const String _defaultUrl = 'http://localhost:8080';
+  final String baseUrl = const String.fromEnvironment(
+    'BASE_URL',
+    defaultValue: _defaultUrl,
+  );
 
   @override
   Future<Profesor> getProfesorById(String id) {
@@ -15,7 +20,7 @@ class ProfesorDataAdapter extends ProfesorRepository {
 
   @override
   Future<List<Profesor>> getProfesores() async {
-    final response = await http.get(Uri.parse(baseUrl));
+    final response = await http.get(Uri.parse('$baseUrl/profesores'));
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(utf8.decode(response.bodyBytes));
       return jsonList.map((e) => Profesor.fromJsonList(e)).toList();
@@ -27,7 +32,7 @@ class ProfesorDataAdapter extends ProfesorRepository {
   @override
   Future<Profesor> crearProfesor(Profesor profesor) async {
     final response = await http.post(
-      Uri.parse(baseUrl),
+      Uri.parse('$baseUrl/profesores'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(profesor.toJson()),
     );
@@ -42,7 +47,7 @@ class ProfesorDataAdapter extends ProfesorRepository {
   }
 
   Future<Profesor?> loginHttp(String email, String password) async {
-    final url = Uri.parse('$baseUrl/login');
+    final url = Uri.parse('$baseUrl/profesores/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},

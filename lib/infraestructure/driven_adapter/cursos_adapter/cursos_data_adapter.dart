@@ -24,7 +24,12 @@ import 'package:get_it/get_it.dart';
 import '/domain/repository/seguimiento_repository.dart';
 class CursosDataAdapter extends CursoRepository {
 
-  final String baseUrl = 'http://localhost:8080/cursos';
+  // lee de la variable de entorno de compilación
+  static const String _defaultUrl = 'http://localhost:8080';
+  final String baseUrl = const String.fromEnvironment(
+    'BASE_URL',
+    defaultValue: _defaultUrl,
+  );
 
 /*
   @override
@@ -192,7 +197,7 @@ class CursosDataAdapter extends CursoRepository {
 
   @override
   Future<List<Curso>> getCursos() async {
-    final response = await http.get(Uri.parse(baseUrl));
+    final response = await http.get(Uri.parse('$baseUrl/cursos'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(utf8.decode(response.bodyBytes));
@@ -235,7 +240,7 @@ class CursosDataAdapter extends CursoRepository {
   @override
   Future<Curso> guardarCurso(Curso curso) async {
     final response = await http.post(
-      Uri.parse(baseUrl),
+      Uri.parse('$baseUrl/cursos'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(curso.toJson()),
     );
