@@ -70,7 +70,7 @@ class LoginController {
           router.go('/panelprofesor/${profesor.id}');
         }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Ups! Algo salio mal, intentalo de nuevo.'),
         ));
       }

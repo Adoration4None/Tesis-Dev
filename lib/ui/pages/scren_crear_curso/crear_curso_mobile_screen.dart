@@ -30,7 +30,6 @@ import 'package:go_router/go_router.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-
 class CrearCursoMobileScreen extends StatefulWidget {
   const CrearCursoMobileScreen({super.key});
 
@@ -69,11 +68,11 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
   // controladores de los formularios
   final TextEditingController _nombreCursoController = TextEditingController();
   final TextEditingController _descripcionCursoController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _colegioCursoController = TextEditingController();
   final TextEditingController _codigoAccesoController = TextEditingController();
   final TextEditingController _nombreEstudianteController =
-  TextEditingController();
+      TextEditingController();
 
   bool get isLastStep => _currentStep == 3 - 1;
   bool get isFirstStep => _currentStep == 0;
@@ -121,7 +120,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
     _cursosProfesoresCasoUso.obtenerCursosYProfesores();
   }
 
-  Future<void> _fetchDepartamentos() async {
+/*   Future<void> _fetchDepartamentos() async {
     final response = await http
         .get(Uri.parse('https://www.datos.gov.co/resource/xdk5-pm3f.json'));
 
@@ -140,9 +139,9 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
         print(departamentos);
       });
     }
-  }
+  } */
 
-  Future<void> _fetchMunicipios(String departamento) async {
+/*   Future<void> _fetchMunicipios(String departamento) async {
     final response = await http.get(Uri.parse(
         'https://www.datos.gov.co/resource/xdk5-pm3f.json?departamento=$departamento'));
 
@@ -160,6 +159,72 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
         municipios = conjuntoDeptoUnico.toList();
       });
     }
+  } */
+
+  Future<void> _fetchDepartamentos() async {
+    try {
+      final ByteData data = await rootBundle
+          .load('assets/data/colombia-departamentos-municipios.json');
+      final jsonData = json.decode(utf8.decode(data.buffer.asUint8List()));
+
+      setState(() {
+        departamentos = (jsonData['departamentos'] as List)
+            .map<String>((d) => d['nombre'] as String)
+            .toList();
+      });
+    } catch (e) {
+      print('Error cargando departamentos: $e');
+      setState(() => departamentos = []);
+    }
+  }
+
+  Future<void> _fetchMunicipios(String departamento) async {
+    try {
+      final ByteData data = await rootBundle
+          .load('assets/data/colombia-departamentos-municipios.json');
+      final jsonData = json.decode(utf8.decode(data.buffer.asUint8List()));
+
+      if (jsonData['departamentos'] == null) {
+        throw Exception('Estructura JSON inválida');
+      }
+
+      final departamentoNormalizado = _normalizarTexto(departamento);
+
+      final List<dynamic> departamentos = jsonData['departamentos'] as List;
+      bool encontrado = false;
+
+      for (final d in departamentos) {
+        final nombreDepto = d['nombre']?.toString() ?? '';
+        final nombreNormalizado = _normalizarTexto(nombreDepto);
+
+        if (nombreNormalizado == departamentoNormalizado) {
+          final municipiosData = d['municipios'] as List? ?? [];
+          setState(() {
+            municipios = municipiosData.cast<String>();
+          });
+          encontrado = true;
+          break;
+        }
+      }
+
+      if (!encontrado) {
+        setState(() => municipios = []);
+      }
+    } catch (e, stackTrace) {
+      setState(() => municipios = []);
+    }
+  }
+
+  String _normalizarTexto(String texto) {
+    return texto
+        .toLowerCase()
+        .replaceAllMapped(RegExp(r'[áàäâ]'), (m) => 'a')
+        .replaceAllMapped(RegExp(r'[éèëê]'), (m) => 'e')
+        .replaceAllMapped(RegExp(r'[íìïî]'), (m) => 'i')
+        .replaceAllMapped(RegExp(r'[óòöô]'), (m) => 'o')
+        .replaceAllMapped(RegExp(r'[úùüû]'), (m) => 'u')
+        .replaceAll(RegExp(r'[^a-z0-9]'), '')
+        .trim();
   }
 
   @override
@@ -175,7 +240,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
         Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Text(
                 'Nombre del curso *',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -211,7 +276,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
         Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Text(
                 'Descripción *',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -246,7 +311,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
         Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Text(
                 'Colegio *',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -283,7 +348,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
         Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Text(
                 'Departamento',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -314,7 +379,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
         Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Text(
                 'Código de acceso *',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -345,7 +410,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
         Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Text(
                 'Portada para el curso',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -359,7 +424,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
                 },
                 child: Container(
                   width:
-                  double.infinity, // Ajusta el ancho según tus necesidades
+                      double.infinity, // Ajusta el ancho según tus necesidades
                   height: 200, // Ajusta la altura según tus necesidades
                   decoration: BoxDecoration(
                     //shape: BoxShape.circle, // La forma es un círculo
@@ -377,7 +442,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
         const Padding(
             padding: EdgeInsets.only(left: 10, right: 10),
             child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
                 'Selecciona una plantilla para el curso',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -398,7 +463,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
         Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               InkWell(
                 onTap: () {
                   /*
@@ -415,7 +480,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
                 },
                 child: Container(
                   width:
-                  double.infinity, // Ajusta el ancho según tus necesidades
+                      double.infinity, // Ajusta el ancho según tus necesidades
                   height: 200, // Ajusta la altura según tus necesidades
                   decoration: BoxDecoration(
                     //shape: BoxShape.circle, // La forma es un círculo
@@ -451,7 +516,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
         Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Text(
                 'Inscribe estudiantes a tu curso',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -490,7 +555,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
                       flex: 2,
                       child: Container(
                           padding:
-                          const EdgeInsets.only(top: 0, left: 0, right: 0),
+                              const EdgeInsets.only(top: 0, left: 0, right: 0),
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -511,7 +576,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
                                           Icons.perm_identity_outlined),
                                       border: OutlineInputBorder(
                                           borderRadius:
-                                          BorderRadius.circular(10),
+                                              BorderRadius.circular(10),
                                           borderSide: const BorderSide(
                                               width: 0,
                                               style: BorderStyle.none)),
@@ -553,7 +618,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
                                             child: CircleAvatar(
                                               radius: 50,
                                               backgroundImage:
-                                              AssetImage(selectedAvatar),
+                                                  AssetImage(selectedAvatar),
                                             ),
                                           )),
                                     ),
@@ -630,7 +695,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
                                           Text(listaEstudiantes[index].nombre!),
                                           SizedBox(
                                               width:
-                                              10), // Espacio entre el nombre y el DropdownButton
+                                                  10), // Espacio entre el nombre y el DropdownButton
                                           DropdownButton<String>(
                                             value: listaEstudiantes[index]
                                                 .genero, // Valor seleccionado del Dropdown
@@ -646,12 +711,12 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
                                               'Femenino',
                                               'Otro'
                                             ].map<DropdownMenuItem<String>>(
-                                                    (String value) {
-                                                  return DropdownMenuItem<String>(
-                                                    value: value,
-                                                    child: Text(value),
-                                                  );
-                                                }).toList(),
+                                                (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
                                           ),
                                         ],
                                       ),
@@ -752,7 +817,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
                                 }
                                 //TODO: Validar la información
                                 Curso curso = Curso(
-                                  // numero random para el id
+                                    // numero random para el id
 
                                     id: Random().nextInt(10000000),
                                     nombre: _nombreCursoController.text,
@@ -764,7 +829,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
                                     portada: selectedImages,
                                     numEstudiantes: listaEstudiantes.length,
                                     descripcion:
-                                    _descripcionCursoController.text,
+                                        _descripcionCursoController.text,
                                     fechaCreacion: DateTime.now().toString(),
                                     fechaFinalizacion: "",
                                     estado: true,
@@ -772,7 +837,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
                                     unidades: unidades);
                                 //TODO: Llamar a la API para guardar la información
                                 bool isValid =
-                                _validateInformation(); // Verifica la información
+                                    _validateInformation(); // Verifica la información
 
                                 if (isValid) {
                                   showDialog(
@@ -791,53 +856,55 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
                                           ),
                                           _loading
                                               ? const Center(
-                                              child:
-                                              CircularProgressIndicator())
+                                                  child:
+                                                      CircularProgressIndicator())
                                               : TextButton(
-                                            onPressed: () {
-                                              //TODO: Llamar a la API para guardar la información
-                                              cursoCasoUso
-                                                  .guardarCursoCs(curso);
-                                              // Guardar en Cubit
-                                              cursoCubit
-                                                  .actualizarCurso(curso);
-                                              bdCursosCubit
-                                                  .agregarCurso(curso);
+                                                  onPressed: () {
+                                                    //TODO: Llamar a la API para guardar la información
+                                                    cursoCasoUso
+                                                        .guardarCursoCs(curso);
+                                                    // Guardar en Cubit
+                                                    cursoCubit
+                                                        .actualizarCurso(curso);
+                                                    bdCursosCubit
+                                                        .agregarCurso(curso);
 
-                                              // Agregar Seguimientos
-                                              cursoCasoUso.crearSeguimientosCs(
-                                                  listaEstudiantes,
-                                                  profesorCubit.state.id!,
-                                                  curso.id!,
-                                                  cursoCubit
-                                                      .obtenerTodasActividadesCurso());
-                                              // Crear Cubit de estudiante para que el profe pueda resolver actividades
-                                              estudiantesCubit.agregarEstudiante(
-                                                  Estudiante(
-                                                      id: profesorCubit
-                                                          .state.id!,
-                                                      nombre:
-                                                      '${profesorCubit.state.nombre}',
-                                                      avatar:
-                                                      '${profesorCubit.state.avatar}',
-                                                      genero: 'Otro'));
+                                                    // Agregar Seguimientos
+                                                    cursoCasoUso
+                                                        .crearSeguimientosCs(
+                                                            listaEstudiantes,
+                                                            profesorCubit
+                                                                .state.id!,
+                                                            curso.id!,
+                                                            cursoCubit
+                                                                .obtenerTodasActividadesCurso());
+                                                    // Crear Cubit de estudiante para que el profe pueda resolver actividades
+                                                    estudiantesCubit.agregarEstudiante(
+                                                        Estudiante(
+                                                            id: profesorCubit
+                                                                .state.id!,
+                                                            nombre:
+                                                                '${profesorCubit.state.nombre}',
+                                                            avatar:
+                                                                '${profesorCubit.state.avatar}',
+                                                            genero: 'Otro'));
 
-                                              // Establecer Rol de Profesor
-                                              context
-                                                  .read<RolCubit>()
-                                                  .actualizarRol(
-                                                  'profesor');
+                                                    // Establecer Rol de Profesor
+                                                    context
+                                                        .read<RolCubit>()
+                                                        .actualizarRol(
+                                                            'profesor');
 
-                                              //TODO: Crear Seguimientos para los estudiantes y el profesor en la BD
-                                              subirCursoFB(curso, router);
+                                                    //TODO: Crear Seguimientos para los estudiantes y el profesor en la BD
+                                                    subirCursoFB(curso, router);
 
-                                              setState(() {
-                                                _loading = true;
-                                              });
-                                              // _onStepContinue();
-                                            },
-                                            child: Text('Confirmar'),
-                                          ),
+                                                    setState(() {
+                                                      _loading = true;
+                                                    });
+                                                    // _onStepContinue();
+                                                  },
+                                                  child: Text('Confirmar'),
+                                                ),
                                         ],
                                       );
                                     },
@@ -869,10 +936,10 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
                         if (_currentStep < 3 - 1)
                           Expanded(
                               child: PixelLargeBttn(
-                                path: 'assets/items/ButtonBlue.png',
-                                onPressed: _onStepContinue,
-                                text: 'Continuar',
-                              ))
+                            path: 'assets/items/ButtonBlue.png',
+                            onPressed: _onStepContinue,
+                            text: 'Continuar',
+                          ))
                       ],
                     ),
                   ],
@@ -887,7 +954,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
 
   Future<void> subirCursoFB(Curso curso, GoRouter router) async {
     CollectionReference cursosRef =
-    FirebaseFirestore.instance.collection('cursos');
+        FirebaseFirestore.instance.collection('cursos');
 
     final cursoMap = curso.toFirestore();
     await cursosRef.add(cursoMap).then((value) {
@@ -915,7 +982,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
 
         reader.onLoadEnd.listen((e) async {
           final Uint8List fileBytes =
-          Uint8List.fromList(reader.result as List<int>);
+              Uint8List.fromList(reader.result as List<int>);
           List<String> datos = await ManejoExcel.leerArchivoExcel(fileBytes);
 
           for (var i = 0; i < datos.length; i++) {
@@ -938,7 +1005,7 @@ class _CrearCursoMobileScreenState extends State<CrearCursoMobileScreen> {
     setState(() {
       selectedDepartamento = depto;
       selectedMunicipio =
-      ''; // Reiniciar los municipios cuando se cambia el departamento
+          ''; // Reiniciar los municipios cuando se cambia el departamento
       municipios = [];
       _fetchMunicipios(depto);
     });

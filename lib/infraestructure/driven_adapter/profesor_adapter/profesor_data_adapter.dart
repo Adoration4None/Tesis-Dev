@@ -1,3 +1,5 @@
+import 'package:proyect_flutter/infraestructure/driven_adapter/initializer_adapter/initializer_data_adapter.dart';
+
 import '/domain/model/profesor.dart';
 import '/domain/repository/profesor_respository.dart';
 import 'dart:convert';
@@ -18,16 +20,24 @@ class ProfesorDataAdapter extends ProfesorRepository {
     throw UnimplementedError();
   }
 
-  @override
-  Future<List<Profesor>> getProfesores() async {
-    final response = await http.get(Uri.parse('$baseUrl/profesores'));
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonList = jsonDecode(utf8.decode(response.bodyBytes));
-      return jsonList.map((e) => Profesor.fromJsonList(e)).toList();
-    } else {
-      throw Exception('Error al obtener la lista de profesores');
-    }
+@override
+Future<List<Profesor>> getProfesores() async {
+  final response = await http.get(Uri.parse('$baseUrl/profesores'));
+  if (response.statusCode == 200) {
+    final List<dynamic> jsonList = jsonDecode(utf8.decode(response.bodyBytes));
+    final profesores = jsonList.map((e) => Profesor.fromJsonList(e)).toList();
+    
+    final initializer = InitializerDataAdapter();
+    final profesorDemo = await initializer.loadProfesorDemo();
+    
+    profesores.add(profesorDemo);
+
+    return profesores;
+  } else {
+    throw Exception('Error al obtener la lista de profesores');
   }
+}
+
 
   @override
   Future<Profesor> crearProfesor(Profesor profesor) async {

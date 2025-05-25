@@ -66,14 +66,6 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // 1) Registrar y precargar el Initializer
-  final initializer = InitializerDataAdapter();
-  await initializer.load(); // carga una vez desde assets/initializer.json
-  getIt.registerSingleton<InitializerDataAdapter>(initializer);
-
-  //final iniciales = await initializer.getCursos();
-  // p.ej.: context.read<BDCursosCubit>().subirCursos(iniciales);
-
   runApp(const MyApp());
 }
 

@@ -55,7 +55,7 @@ class _CrearCursoWebScreenState extends State<CrearCursoWebScreen> {
 
 // Datos ubicacion
   String selectedDepartamento = '';
-  String selectedMunicipio = '';
+  String? selectedMunicipio = '';
   List<String> departamentos = [];
   List<String> municipios = [];
 
@@ -135,7 +135,7 @@ class _CrearCursoWebScreenState extends State<CrearCursoWebScreen> {
     cursoCasoUso = CursosCasoUso(cursoRepository: getIt<CursoRepository>());
   }
 
-  Future<void> _fetchDepartamentos() async {
+  /* Future<void> _fetchDepartamentos() async {
     final response = await http
         .get(Uri.parse('https://www.datos.gov.co/resource/xdk5-pm3f.json'));
 
@@ -174,7 +174,74 @@ class _CrearCursoWebScreenState extends State<CrearCursoWebScreen> {
         municipios = conjuntoDeptoUnico.toList();
       });
     }
+  } */
+
+  Future<void> _fetchDepartamentos() async {
+    try {
+      final ByteData data = await rootBundle.load('assets/data/colombia-departamentos-municipios.json');
+      final jsonData = json.decode(utf8.decode(data.buffer.asUint8List()));
+      
+      setState(() {
+        departamentos = (jsonData['departamentos'] as List)
+            .map<String>((d) => d['nombre'] as String)
+            .toList();
+      });
+
+    } catch (e) {
+      print('Error cargando departamentos: $e');
+      setState(() => departamentos = []);
+    }
   }
+
+  Future<void> _fetchMunicipios(String departamento) async {
+  try {
+
+    final ByteData data = await rootBundle.load('assets/data/colombia-departamentos-municipios.json');
+    final jsonData = json.decode(utf8.decode(data.buffer.asUint8List()));
+
+    if (jsonData['departamentos'] == null) {
+      throw Exception('Estructura JSON inválida');
+    }
+
+    final departamentoNormalizado = _normalizarTexto(departamento);
+
+    final List<dynamic> departamentos = jsonData['departamentos'] as List;
+    bool encontrado = false;
+
+    for (final d in departamentos) {
+      final nombreDepto = d['nombre']?.toString() ?? '';
+      final nombreNormalizado = _normalizarTexto(nombreDepto);
+      
+      if (nombreNormalizado == departamentoNormalizado) {
+        final municipiosData = d['municipios'] as List? ?? [];
+        setState(() {
+          municipios = municipiosData.cast<String>();
+        });
+        encontrado = true;
+        break;
+      }
+    }
+
+    if (!encontrado) {
+      setState(() => municipios = []);
+    }
+
+  } catch (e, stackTrace) {
+    setState(() => municipios = []);
+  }
+}
+
+String _normalizarTexto(String texto) {
+  return texto
+      .toLowerCase()
+      .replaceAllMapped(RegExp(r'[áàäâ]'), (m) => 'a')
+      .replaceAllMapped(RegExp(r'[éèëê]'), (m) => 'e')
+      .replaceAllMapped(RegExp(r'[íìïî]'), (m) => 'i')
+      .replaceAllMapped(RegExp(r'[óòöô]'), (m) => 'o')
+      .replaceAllMapped(RegExp(r'[úùüû]'), (m) => 'u')
+      .replaceAll(RegExp(r'[^a-z0-9]'), '')
+      .trim();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -793,15 +860,15 @@ class _CrearCursoWebScreenState extends State<CrearCursoWebScreen> {
                                     fechaFinalizacion: "",
                                     estado: true,
                                     estudiantes: listaEstudiantes,
-                                    unidades: unidades);
+                                    /* unidades: unidades */);
 
                                 // Crear las unidades extraidas del demo
-                                for (var unidad in cursoDemo.unidades!) {
+                                /* for (var unidad in cursoDemo.unidades!) {
                                   unidad.cursoId = curso.id!;
                                   unidades.add(unidad);
-                                }
+                                } */
 
-                                curso.unidades = unidades;
+                                /* curso.unidades = unidades; */
 
                                 bool isValid =
                                 _validateInformation(); // Verifica la información
@@ -1164,11 +1231,10 @@ class _CrearCursoWebScreenState extends State<CrearCursoWebScreen> {
   void _selectDepto(String depto) {
     setState(() {
       selectedDepartamento = depto;
-      selectedMunicipio =
-      ''; // Reiniciar los municipios cuando se cambia el departamento
+      selectedMunicipio = null;
       municipios = [];
-      _fetchMunicipios(depto);
     });
+    _fetchMunicipios(depto);
   }
 
   void _selectMunicipio(String municipio) {
