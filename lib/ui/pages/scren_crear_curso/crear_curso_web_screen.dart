@@ -860,7 +860,7 @@ String _normalizarTexto(String texto) {
                                     fechaFinalizacion: "",
                                     estado: true,
                                     estudiantes: listaEstudiantes,
-                                    /* unidades: unidades */);
+                                    unidades: unidades);
 
                                 // Crear las unidades extraidas del demo
                                 /* for (var unidad in cursoDemo.unidades!) {
@@ -868,7 +868,14 @@ String _normalizarTexto(String texto) {
                                   unidades.add(unidad);
                                 } */
 
-                                /* curso.unidades = unidades; */
+                                  if (cursoDemo.unidades != null) {
+                                    for (var unidad in cursoDemo.unidades!) {
+                                      unidad.cursoId = curso.id!;
+                                      unidades.add(unidad);
+                                    }
+                                  }
+
+                                curso.unidades = unidades;
 
                                 bool isValid =
                                 _validateInformation(); // Verifica la información
