@@ -36,45 +36,5 @@ abstract class Actividad {
   }
 
   Map<String, dynamic> toJson(); // Implementado en subclases
-
-  /*
-  factory Actividad.fromFirestore(Map<String, dynamic> data) {
-    return Actividad(
-      id: data['id'],
-      nombre: data['nombre'],
-      descripcion: data['descripcion'],
-      estado: data['estado'],
-      tipoActividad: data['tipoActividad'],
-      pesoRespuestas: data['pesoRespuestas'],
-      habilidades: data['habilidades'],
-      pista: data['pista'],
-    );
-  }
-  */
-
-  factory Actividad.fromFirestore(Map<String, dynamic> data) {
-    switch (data['tipoActividad'] as String) {
-      case 'Cuestionario':
-        return ActividadCuestionario.fromFirestore(data);
-      case 'Laberinto':
-        return ActividadLaberinto.fromFirestore(data);
-      case 'Desconectada':
-        return ActividadDesconectada.fromFirestore(data);
-      default:
-        throw Exception('Actividad desconocida en Firestore: ${data['tipoActividad']}');
-    }
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      if (id != null) "id": id,
-      "nombre": nombre,
-      "descripcion": descripcion,
-      "estado": estado,
-      "tipoActividad": tipoActividad,
-      "pesoRespuestas": pesoRespuestas,
-      "habilidades": habilidades,
-      "pista": pista,
-    };
-  }
+  
 }

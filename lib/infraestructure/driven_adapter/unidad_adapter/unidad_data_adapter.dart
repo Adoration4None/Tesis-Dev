@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:proyect_flutter/domain/model/curso.dart';
 import '/domain/model/unidad.dart';
 import '/domain/repository/unidad_repository.dart';
 
@@ -32,18 +33,30 @@ class UnidadDataAdapter extends UnidadRepository {
       throw Exception('Error al obtener unidades: ${response.body}');
     }
   }
-}
 
-
-/*
-import '/domain/model/unidad.dart';
-import '/domain/repository/unidad_repository.dart';
-
-class UnidadDataAdapter extends UnidadRepository {
   @override
-  Future<List<Unidad>> getUnidades(int idCurso) {
-    // TODO: implement getUnidades
+  Future<void> guardarUnidad(Unidad unidad) async {
+    /*
+    final response = await http.post(
+      Uri.parse('$baseUrl/unidades'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(curso.toJson()),
+    );
+
+    if (response.statusCode == 201) {
+      return Curso.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Error al crear el curso');
+    }
+    */
+  }
+
+  @override
+  Future<void> guardarUnidadesCurso(Curso curso) {
+    // TODO: implement guardarUnidadesCurso
     throw UnimplementedError();
   }
 }
-*/
+
+
+

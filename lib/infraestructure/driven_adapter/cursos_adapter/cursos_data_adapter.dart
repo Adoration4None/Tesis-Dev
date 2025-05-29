@@ -195,19 +195,43 @@ class CursosDataAdapter extends CursoRepository {
   }
   */
 
-  @override
-  Future<List<Curso>> getCursos() async {
-    final response = await http.get(Uri.parse('$baseUrl/cursos'));
+@override
+Future<List<Curso>> getCursos() async {
+  final response = await http.get(Uri.parse('$baseUrl/cursos'));
+  if (response.statusCode != 200) {
+    throw Exception('Error al obtener la lista de cursos');
+  }
 
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonList = jsonDecode(utf8.decode(response.bodyBytes));
-      return jsonList.map((e) =>  Curso.fromJson(e)).toList();
-    } else {
-      throw Exception('Error al obtener la lista de cursos');
+  final List<dynamic> jsonList = jsonDecode(utf8.decode(response.bodyBytes));
+  List<Curso> cursos = jsonList.map((e) => Curso.fromJson(e)).toList();
+
+  // Para cada curso, obtener y asignar sus unidades
+  for (var curso in cursos) {
+    try {
+      final unidadesResp = await http.get(
+        Uri.parse('$baseUrl/unidades?cursoId=${curso.id}'),
+      );
+      if (unidadesResp.statusCode == 200) {
+        final List<dynamic> unidadesJson =
+            jsonDecode(utf8.decode(unidadesResp.bodyBytes));
+        curso.unidades = unidadesJson
+            .map((u) => Unidad.fromJson(u))
+            .toList();
+      } else {
+        print('Error al obtener unidades para curso ${curso.id}: '
+            '${unidadesResp.statusCode}');
+        curso.unidades = [];
+      }
+    } catch (e) {
+      print('Excepción al obtener unidades para curso ${curso.id}: $e');
+      curso.unidades = [];
     }
   }
 
-/*
+  return cursos;
+}
+
+
   List<dynamic> converirALista(String lista) {
     // Convertir el string de vuelta a una lista
     List<dynamic> newList;
@@ -221,21 +245,8 @@ class CursosDataAdapter extends CursoRepository {
     lista == "" ? newList = [] : newList = List<int>.from(jsonDecode(lista));
     return newList;
   }
-  */
+  
 
-/*
-  @override
-  // Método para subir el objeto a Firestore
-  Future<void> guardarCurso(Curso curso) async {
-    // Instanciar el servicio de Firestore
-    final firebaseService =
-        FirebaseService(firestore: FirebaseFirestore.instance);
-    await firebaseService.subirCursoFB(curso);
-
-    // se fija el curso para formatearlo y enviarlo a firebase (unidades y actividades)
-    await firebaseService.subirUnidadesFB(curso);
-  }
-  */
 
   @override
   Future<Curso> guardarCurso(Curso curso) async {

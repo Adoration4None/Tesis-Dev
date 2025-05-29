@@ -1,5 +1,6 @@
 import '/domain/model/actividad.dart';
 import '/game/player/player.dart';
+import 'dart:convert';
 
 class ActividadLaberinto extends Actividad {
   String? nombreArchivo;
@@ -29,18 +30,18 @@ class ActividadLaberinto extends Actividad {
         estado: json['estado'],
         tipoActividad: json['tipoActividad'],
         pesoRespuestas: json['pesoRespuestas'] != null
-            ? List<int>.from(json['pesoRespuestas'])
+            ? List<int>.from( jsonDecode(json['pesoRespuestas']) )
             : null,
         habilidades: json['habilidades'] != null
-            ? List<int>.from(json['habilidades'])
+            ? List<int>.from( jsonDecode(json['habilidades']) )
             : null,
         pista: json['pista'],
         nombreArchivo: json['nombreArchivo'],
         mejorCamino: json['mejorCamino'] != null
-            ? List<dynamic>.from(json['mejorCamino'])
+            ? List<dynamic>.from( jsonDecode(json['mejorCamino']) )
             : null,
         mejorCamino2: json['mejorCamino2'] != null
-            ? List<dynamic>.from(json['mejorCamino2'])
+            ? List<dynamic>.from( jsonDecode(json['mejorCamino2']) )
             : null,
         initialState: json['initialState'],
       );
@@ -52,50 +53,19 @@ class ActividadLaberinto extends Actividad {
         'descripcion': descripcion,
         'estado': estado,
         'tipoActividad': tipoActividad,
-        'pesoRespuestas': pesoRespuestas,
-        'habilidades': habilidades,
+        'pesoRespuestas': convertirListaAStringPlano(pesoRespuestas ?? []),
+        'habilidades': convertirListaAStringPlano(habilidades ?? []),
         'pista': pista,
         'nombreArchivo': nombreArchivo,
-        'mejorCamino': mejorCamino,
-        'mejorCamino2': mejorCamino2,
+        'mejorCamino': convertirListaAStringPlano(mejorCamino ?? []),
+        'mejorCamino2': convertirListaAStringPlano(mejorCamino2 ?? []),
         'initialState': initialState,
       };
-  // To Map
-  factory ActividadLaberinto.fromFirestore(Map<String, dynamic> data) {
-    return ActividadLaberinto(
-      id: data['id'],
-      nombre: data['nombre'],
-      descripcion: data['descripcion'],
-      estado: data['estado'],
-      tipoActividad: data['tipoActividad'],
-      pesoRespuestas: data['pesoRespuestas'],
-      habilidades: data['habilidades'],
-      pista: data['pista'],
-      nombreArchivo: data['nombreArchivo'],
-      mejorCamino: data['mejorCamino'] != null
-          ? List<dynamic>.from(data['mejorCamino'])
-          : [],
-      mejorCamino2: data['mejorCamino2'] != null
-          ? List<dynamic>.from(data['mejorCamino2'])
-          : [],
-      initialState: data['initialState'],
-    );
-  }
+  
+  String convertirListaAStringPlano(List<dynamic> respuestas) {
+    // Convertir la lista a un string
+    String listAsString = jsonEncode(respuestas);
 
-  Map<String, dynamic> toFirestore() {
-    return {
-      if (id != null) "id": id,
-      "nombre": nombre,
-      "descripcion": descripcion,
-      "estado": estado,
-      "tipoActividad": tipoActividad,
-      "pesoRespuestas": pesoRespuestas,
-      "habilidades": habilidades,
-      "pista": pista,
-      "nombreArchivo": nombreArchivo,
-      "mejorCamino": mejorCamino,
-      "mejorCamino2": mejorCamino2,
-      "initialState": initialState,
-    };
+    return listAsString;
   }
 }

@@ -1,4 +1,5 @@
 import '/domain/model/actividad.dart';
+import 'dart:convert';
 
 class ActividadCuestionario extends Actividad {
   int? dimension;
@@ -38,15 +39,15 @@ class ActividadCuestionario extends Actividad {
         estado: json['estado'],
         tipoActividad: json['tipoActividad'],
         pesoRespuestas: json['pesoRespuestas'] != null
-            ? List<int>.from(json['pesoRespuestas'])
+            ? List<int>.from( jsonDecode(json['pesoRespuestas']) )
             : null,
         habilidades: json['habilidades'] != null
-            ? List<int>.from(json['habilidades'])
+            ? List<int>.from( jsonDecode(json['habilidades']) )
             : null,
         pista: json['pista'],
         dimension: json['dimension'],
         casillas:
-            json['casillas'] != null ? List<int>.from(json['casillas']) : null,
+            json['casillas'] != null ? List<int>.from( jsonDecode( json['casillas']) ) : null,
         respuestas: (json['respuestas'] as List<dynamic>?)
             ?.map((r) => List<dynamic>.from(r as List<dynamic>))
             .toList(),
@@ -62,57 +63,21 @@ class ActividadCuestionario extends Actividad {
         'descripcion': descripcion,
         'estado': estado,
         'tipoActividad': tipoActividad,
-        'pesoRespuestas': pesoRespuestas,
-        'habilidades': habilidades,
+        'pesoRespuestas': convertirListaAStringPlano(pesoRespuestas ?? []),
+        'habilidades': convertirListaAStringPlano(habilidades ?? []),
         'pista': pista,
         'dimension': dimension,
-        'casillas': casillas,
-        'respuestas': respuestas,
+        'casillas': convertirListaAStringPlano(casillas ?? []),
+        'respuestas': convertirListaAStringPlano(respuestas ?? []),
         'ejercicioImage': ejercicioImage,
         'ejemploImage': ejemploImage,
         'respuestaCorrecta': respuestaCorrecta,
       };
 
-  // To Map
-  factory ActividadCuestionario.fromFirestore(Map<String, dynamic> data) {
-    return ActividadCuestionario(
-      id: data['id'],
-      nombre: data['nombre'],
-      descripcion: data['descripcion'],
-      estado: data['estado'],
-      tipoActividad: data['tipoActividad'],
-      pesoRespuestas: data['pesoRespuestas'],
-      habilidades: data['habilidades'],
-      dimension: data['dimension'],
-      casillas:
-          data['casillas'] != null ? List<int>.from(data['casillas']) : null,
-      respuestas: data['respuestas'] != null
-          ? List<dynamic>.from(data['respuestas'])
-          : null,
-      ejercicioImage: data['ejercicioImage'],
-      ejemploImage: data['ejemploImage'],
-      pista: data['pista'],
-      respuestaCorrecta: data['respuestaCorrecta'],
-    );
-  }
+  String convertirListaAStringPlano(List<dynamic> respuestas) {
+    // Convertir la lista a un string
+    String listAsString = jsonEncode(respuestas);
 
-  @override
-  Map<String, dynamic> toFirestore() {
-    return {
-      if (id != null) "id": id,
-      "nombre": nombre,
-      "descripcion": descripcion,
-      "estado": estado,
-      "tipoActividad": tipoActividad,
-      "pesoRespuestas": pesoRespuestas,
-      "habilidades": habilidades,
-      "dimension": dimension,
-      "casillas": casillas,
-      "respuestas": respuestas,
-      "ejercicioImage": ejercicioImage,
-      "ejemploImage": ejemploImage,
-      "pista": pista,
-      "respuestaCorrecta": respuestaCorrecta,
-    };
+    return listAsString;
   }
 }

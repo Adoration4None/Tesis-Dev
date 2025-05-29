@@ -98,8 +98,8 @@ class Curso {
       if (estudiantes != null)
         "estudiantes":
             estudiantes?.map((estudiante) => estudiante.toFirestore()).toList(),
-      if (unidades != null)
-        "unidades": unidades?.map((unidad) => unidad.toFirestore()).toList(),
+      //if (unidades != null)
+        //"unidades": unidades?.map((unidad) => unidad.toFirestore()).toList(),
     };
   }
 

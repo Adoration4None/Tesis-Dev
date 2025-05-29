@@ -1,4 +1,5 @@
 import '/domain/model/actividad.dart';
+import 'dart:convert';
 
 class ActividadDesconectada extends Actividad {
   String? ejercicioImage;
@@ -24,11 +25,11 @@ class ActividadDesconectada extends Actividad {
           estado: json['estado'],
           tipoActividad: json['tipoActividad'],
           pesoRespuestas: json['pesoRespuestas'] != null
-              ? List<int>.from(json['pesoRespuestas'])
-              : null,
-          habilidades: json['habilidades'] != null
-              ? List<int>.from(json['habilidades'])
-              : null,
+            ? List<int>.from( jsonDecode(json['pesoRespuestas']) )
+            : null,
+        habilidades: json['habilidades'] != null
+            ? List<int>.from( jsonDecode(json['habilidades']) )
+            : null,
           pista: json['pista'],
           ejemploImage: json['ejemploImage'],
           ejercicioImage: json['ejercicioImage']);
@@ -40,42 +41,17 @@ class ActividadDesconectada extends Actividad {
         'descripcion': descripcion,
         'estado': estado,
         'tipoActividad': tipoActividad,
-        'pesoRespuestas': pesoRespuestas,
-        'habilidades': habilidades,
+        'pesoRespuestas': convertirListaAStringPlano(pesoRespuestas ?? []),
+        'habilidades': convertirListaAStringPlano(habilidades ?? []),
         'pista': pista,
         'ejemploImage': ejemploImage,
         'ejercicioImage': ejercicioImage,
       };
 
-  // To Map
-  factory ActividadDesconectada.fromFirestore(Map<String, dynamic> data) {
-    return ActividadDesconectada(
-      id: data['id'],
-      nombre: data['nombre'],
-      descripcion: data['descripcion'],
-      estado: data['estado'],
-      tipoActividad: data['tipoActividad'],
-      pesoRespuestas: data['pesoRespuestas'],
-      habilidades: data['habilidades'],
-      pista: data['pista'],
-      ejercicioImage: data['ejercicioImage'],
-      ejemploImage: data['ejemploImage'],
-    );
-  }
+  String convertirListaAStringPlano(List<dynamic> respuestas) {
+    // Convertir la lista a un string
+    String listAsString = jsonEncode(respuestas);
 
-@override
-  Map<String, dynamic> toFirestore() {
-    return {
-      if (id != null) "id": id,
-      "nombre": nombre,
-      "descripcion": descripcion,
-      "estado": estado,
-      "tipoActividad": tipoActividad,
-      "pesoRespuestas": pesoRespuestas,
-      "habilidades": habilidades,
-      "pista": pista,
-      "ejercicioImage": ejercicioImage,
-      "ejemploImage": ejemploImage,
-    };
+    return listAsString;
   }
 }

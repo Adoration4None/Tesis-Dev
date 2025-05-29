@@ -37,29 +37,4 @@ class Unidad {
     'actividades': actividades?.map((a) => a.toJson()).toList(),
   };
 
-  // Método de fábrica para Firestore (toMap)
-  factory Unidad.fromFirestore(Map<String, dynamic> data) {
-    return Unidad(
-      id: data['id'],
-      nombre: data['nombre'],
-      descripcion: data['descripcion'],
-      estado: data['estado'],
-      cursoId: data['cursoId'],
-      actividades: (data['actividades'] as List<dynamic>?)
-          ?.map((actividadData) => Actividad.fromFirestore(actividadData))
-          .toList(),
-    );
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      if (id != null) "id": id,
-      "nombre": nombre,
-      "descripcion": descripcion,
-      "estado": estado,
-      "cursoId": cursoId,
-      "actividades":
-          actividades?.map((actividad) => actividad.toFirestore()).toList(),
-    };
-  }
 }
