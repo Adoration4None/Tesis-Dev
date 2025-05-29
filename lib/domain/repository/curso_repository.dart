@@ -7,7 +7,7 @@ import '/domain/model/seguimiento.dart';
 abstract class CursoRepository {
   Future<List<Curso>> getCursos();
 
-  Future<void> guardarCurso(Curso curso);
+  Future<bool> guardarCurso(Curso curso);
 
   Future<Curso> getCursoById(String id);
 

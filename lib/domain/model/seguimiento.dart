@@ -76,7 +76,7 @@ class Seguimiento {
   }
 
   /// Convierte la instancia de Seguimiento a un Map JSON
-  Map<String, dynamic> toJson() {
+  /* Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
       if (calificacion != null) 'calificacion': calificacion,
@@ -87,5 +87,18 @@ class Seguimiento {
         'respuestasActividades':
             respuestasActividades!.map((r) => r.toJson()).toList(),
     };
+  } */
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (id != null) 'id': id,
+      if (calificacion != null) 'calificacion': calificacion,
+      if (userId != null) 'estudianteId': userId,
+      if (cursoId != null) 'cursoId': cursoId,
+      if (test != null) 'test': test,
+      if (respuestasActividades != null)
+        'respuestasActividades': respuestasActividades!.map((r) => r.id).toList(),
+    };
   }
+
 }

@@ -582,7 +582,7 @@ String _normalizarTexto(String texto) {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
+                    Flexible(
                       flex: 2,
                       child: Container(
                           padding:
@@ -619,7 +619,7 @@ String _normalizarTexto(String texto) {
                                 ),
                               ])),
                     ),
-                    Expanded(
+                    Flexible(
                         child: Container(
                             padding: const EdgeInsets.only(left: 10, right: 0),
                             child: Column(
@@ -694,7 +694,7 @@ String _normalizarTexto(String texto) {
                         const SizedBox(height: 10),
                         const Divider(),
                         const SizedBox(height: 10),
-                        Expanded(
+                        Flexible(
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
@@ -819,7 +819,7 @@ String _normalizarTexto(String texto) {
                     Row(
                       children: [
                         if (_currentStep > 0)
-                          Expanded(
+                          Flexible(
                             child: PixelLargeBttn(
                               path: 'assets/items/ButtonOrange.png',
                               onPressed: _onStepCancel,
@@ -830,7 +830,7 @@ String _normalizarTexto(String texto) {
                           width: 10,
                         ),
                         if (isLastStep)
-                          Expanded(
+                          Flexible(
                             child: PixelLargeBttn(
                               path: 'assets/items/ButtonBlue.png',
                               onPressed: () async {
@@ -863,17 +863,17 @@ String _normalizarTexto(String texto) {
                                     unidades: unidades);
 
                                 // Crear las unidades extraidas del demo
-                                /* for (var unidad in cursoDemo.unidades!) {
+                                for (var unidad in cursoDemo.unidades!) {
                                   unidad.cursoId = curso.id!;
                                   unidades.add(unidad);
-                                } */
+                                }
 
-                                  if (cursoDemo.unidades != null) {
+                                  /* if (cursoDemo.unidades != null) {
                                     for (var unidad in cursoDemo.unidades!) {
                                       unidad.cursoId = curso.id!;
                                       unidades.add(unidad);
                                     }
-                                  }
+                                  } */
 
                                 curso.unidades = unidades;
 
@@ -901,6 +901,23 @@ String _normalizarTexto(String texto) {
                                               CircularProgressIndicator())
                                               : TextButton(
                                             onPressed: () async {
+                                                    final guardado =
+                                                        await cursoCasoUso
+                                                            .guardarCursoCs(
+                                                                curso);
+
+                                                    if (!guardado) {
+                                                      Fluttertoast.showToast(
+                                                        msg:
+                                                            'Error al guardar el curso. Valida la información.',
+                                                        toastLength:
+                                                            Toast.LENGTH_LONG,
+                                                        gravity:
+                                                            ToastGravity.BOTTOM,
+                                                      );
+                                                      return;
+                                                    }
+
                                               // Guardar en Cubit
                                               cursoCubit
                                                   .actualizarCurso(curso);
@@ -956,8 +973,8 @@ String _normalizarTexto(String texto) {
                                                   .actualizarRol(
                                                   'profesor');
                                               // Llamar a la API para guardar la información
-                                              cursoCasoUso
-                                                  .guardarCursoCs(curso);
+                                              /* cursoCasoUso
+                                                  .guardarCursoCs(curso); */
 
                                               router.go(
                                                   '/panelcurso/${curso.id}');
@@ -997,7 +1014,7 @@ String _normalizarTexto(String texto) {
                             ),
                           ),
                         if (_currentStep < 3 - 1)
-                          Expanded(
+                          Flexible(
                               child: PixelLargeBttn(
                                 path: 'assets/items/ButtonBlue.png',
                                 onPressed: _onStepContinue,

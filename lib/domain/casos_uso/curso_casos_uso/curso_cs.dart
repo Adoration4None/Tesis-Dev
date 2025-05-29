@@ -84,8 +84,8 @@ class CursosCasoUso {
 
   //** FIREBASE */
   // Método para subir el objeto a Firestore
-  Future<void> guardarCursoCs(Curso curso) async {
-    cursoRepository.guardarCurso(curso);
+  Future<bool> guardarCursoCs(Curso curso) async {
+    return cursoRepository.guardarCurso(curso);
   }
 
   // metodo para subir cada seguimiento
