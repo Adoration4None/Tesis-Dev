@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:proyect_flutter/domain/mapper/actividad_mapper.dart';
 import 'package:proyect_flutter/infraestructure/driven_adapter/initializer_adapter/initializer_data_adapter.dart';
+import 'package:proyect_flutter/infraestructure/driven_adapter/unidad_adapter/unidad_data_adapter.dart';
 import '../../../domain/model/actividad_cuestionario.dart';
 import '../../../domain/model/actividad_desconectada.dart';
 import '../../../domain/model/actividad_laberinto.dart';
@@ -41,102 +43,19 @@ class CursosDataAdapter extends CursoRepository {
     final cursoDemo = await initializer.loadCursoDemo();
     cursos.add(cursoDemo);
 
+    final unidadDataAdapter = UnidadDataAdapter();
+
     final response = await http.get(Uri.parse('$baseUrl/cursos'));
 
     if (response.statusCode == 200) {
       try {
-        final List<dynamic> cursosJson = jsonDecode(utf8.decode(response.bodyBytes));
+        final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+        for (var cursoJson in data) {
+          Curso curso = Curso.fromJson(cursoJson);
 
-        for (final cursoJson in cursosJson) {
-          final List<Unidad> unidades = [];
-
-          // Cargar unidades anidadas
-          final unidadesJson = cursoJson['unidades'] ?? [];
-          for (final unidadJson in unidadesJson) {
-            final List<Actividad> actividades = [];
-
-            final actividadesJson = unidadJson['actividades'] ?? [];
-            for (final act in actividadesJson) {
-              final String tipo = act['tipoActividad'];
-
-              if (tipo == 'Laberinto') {
-                actividades.add(ActividadLaberinto(
-                  id: act['id'],
-                  nombre: act['nombre'],
-                  descripcion: act['descripcion'],
-                  estado: act['estado'],
-                  tipoActividad: act['tipoActividad'],
-                  pesoRespuestas: converirAListaEnteros(act['pesoRespuestas']),
-                  habilidades: converirAListaEnteros(act['habilidades']),
-                  pista: act['pista'],
-                  nombreArchivo: act['nombreArchivo'],
-                  mejorCamino: converirALista(act['mejorCamino']),
-                  mejorCamino2: converirALista(act['mejorCamino2']),
-                  initialState: act['initialState'],
-                ));
-              } else if (tipo == 'Cuestionario') {
-                actividades.add(ActividadCuestionario(
-                  id: act['id'],
-                  nombre: act['nombre'],
-                  descripcion: act['descripcion'],
-                  estado: act['estado'],
-                  tipoActividad: act['tipoActividad'],
-                  pesoRespuestas: converirAListaEnteros(act['pesoRespuestas']),
-                  habilidades: converirAListaEnteros(act['habilidades']),
-                  pista: act['pista'],
-                  dimension: act['dimension'],
-                  casillas: converirAListaEnteros(act['casillas']),
-                  respuestas: converirALista(act['respuestas']),
-                  ejercicioImage: act['ejercicioImage'],
-                  ejemploImage: act['ejemploImage'],
-                  respuestaCorrecta: act['respuestaCorrecta'],
-                ));
-              } else if (tipo == 'Desconectada') {
-                actividades.add(ActividadDesconectada(
-                  id: act['id'],
-                  nombre: act['nombre'],
-                  descripcion: act['descripcion'],
-                  estado: act['estado'],
-                  tipoActividad: act['tipoActividad'],
-                  pesoRespuestas: converirAListaEnteros(act['pesoRespuestas']),
-                  habilidades: converirAListaEnteros(act['habilidades']),
-                  pista: act['pista'],
-                  ejercicioImage: act['ejercicioImage'],
-                  ejemploImage: act['ejemploImage'],
-                ));
-              }
-            }
-
-            final unidad = Unidad(
-              id: unidadJson['id'],
-              nombre: unidadJson['nombre'],
-              descripcion: unidadJson['descripcion'],
-              estado: unidadJson['estado'],
-              actividades: actividades,
-              cursoId: unidadJson['cursoId'],
-            );
-            unidades.add(unidad);
-          }
-
-          final curso = Curso(
-            id: cursoJson['id'],
-            nombre: cursoJson['nombre'],
-            codigoAcceso: cursoJson['codigoAcceso'],
-            departamento: cursoJson['departamento'],
-            ciudad: cursoJson['ciudad'],
-            colegio: cursoJson['colegio'],
-            profesor: cursoJson['profesor'],
-            portada: cursoJson['portada'],
-            numEstudiantes: cursoJson['numEstudiantes'],
-            descripcion: cursoJson['descripcion'],
-            fechaCreacion: cursoJson['fechaCreacion'],
-            fechaFinalizacion: cursoJson['fechaFinalizacion'],
-            estado: cursoJson['estado'],
-            estudiantes: (cursoJson['estudiantes'] as List<dynamic>?)
-                ?.map((est) => Estudiante.fromFirestore(est))
-                .toList(),
-            unidades: unidades,
-          );
+          final unidades = await unidadDataAdapter.getUnidades(curso.id!);
+          
+          curso.unidades = organizarUnidades(unidades);
 
           cursos.add(curso);
         }
@@ -163,6 +82,23 @@ class CursosDataAdapter extends CursoRepository {
     lista == "" ? newList = [] : newList = List<int>.from(jsonDecode(lista));
     return newList;
   }
+
+  List<Unidad> organizarUnidades(List<Unidad> unidades) {
+  List<Unidad> organizadas = List.filled(3, Unidad(cursoId: 1));
+
+  for (var unidad in unidades) {
+    if (unidad.nombre == 'Unidad \nDiagnóstico') {
+      organizadas[0] = unidad;
+    } else if (unidad.nombre == 'Unidad 1') {
+      organizadas[1] = unidad;
+    } else if (unidad.nombre == 'Unidad 2') {
+      organizadas[2] = unidad;
+    }
+  }
+
+  return organizadas;
+}
+
 
   /* @override
   // Método para subir el objeto a Firestore
@@ -248,7 +184,7 @@ class CursosDataAdapter extends CursoRepository {
 
     try {
       // El seguimiento viene en formato JSON desde el cliente
-      final seguimientoJson = actividadCuestionarioSave.toJson();
+      final seguimientoJson = ActividadMapper.toJson(actividadCuestionarioSave);
 
       // Crea el objeto Seguimiento desde el JSON
       final seguimiento = Seguimiento.fromJson(seguimientoJson);

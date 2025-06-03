@@ -20,14 +20,12 @@ class UnidadDataAdapter extends UnidadRepository {
     if (response.statusCode == 200) {
       final List<dynamic> unidadesJson = jsonDecode(response.body);
       return unidadesJson.map((e) {
-        // agregamos cursoId manualmente ya que no viene del backend
         final unidad = Unidad.fromJson(e as Map<String, dynamic>);
-        unidad.cursoId = idCurso; // por si el backend no lo envía
+        unidad.cursoId = idCurso;
         return unidad;
-
       }).toList();
     } else if (response.statusCode == 404) {
-      return []; // No hay unidades, lo manejas como lista vacía
+      return [];
     } else {
       throw Exception('Error al obtener unidades: ${response.body}');
     }

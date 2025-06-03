@@ -1,3 +1,4 @@
+import '/domain/mapper/actividad_mapper.dart';
 import '/domain/model/actividad.dart';
 
 class Unidad {
@@ -5,43 +6,20 @@ class Unidad {
   String? nombre;
   String? descripcion;
   String? estado;
-  int cursoId;
   List<Actividad>? actividades;
+  int cursoId;
 
-  Unidad({
-    this.id,
-    this.nombre,
-    this.descripcion,
-    this.estado,
-    required this.cursoId,
-    this.actividades,
-  });
+  Unidad(
+      {this.id,
+      this.nombre,
+      this.descripcion,
+      this.estado,
+      this.actividades,
+      required this.cursoId});
 
-  factory Unidad.fromJson(Map<String, dynamic> json) {
-    return Unidad(
-      id: json['id'],
-      nombre: json['nombre'],
-      descripcion: json['descripcion'],
-      estado: json['estado'],
-      cursoId: json['cursoId'],
-      actividades: (json['actividades'] as List<dynamic>?)
-              ?.map((a) => Actividad.fromJson(a))
-              .toList() ??
-          [],
-    );
-  }
-  
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'nombre': nombre,
-    'descripcion': descripcion,
-    'estado': estado,
-    'cursoId': cursoId,
-    'actividades': actividades?.map((a) => a.toJson()).toList(),
-  };
-
-  // Método de fábrica para Firestore (toMap)
-  /* factory Unidad.fromFirestore(Map<String, dynamic> data) {
+  // metodo toMap
+  // To Map
+  factory Unidad.fromFirestore(Map<String, dynamic> data) {
     return Unidad(
       id: data['id'],
       nombre: data['nombre'],
@@ -52,7 +30,7 @@ class Unidad {
           ?.map((actividadData) => Actividad.fromFirestore(actividadData))
           .toList(),
     );
-  } */
+  }
 
   Map<String, dynamic> toFirestore() {
     return {
@@ -65,4 +43,27 @@ class Unidad {
           actividades?.map((actividad) => actividad.toFirestore()).toList(),
     };
   }
+
+  factory Unidad.fromJson(Map<String, dynamic> json) {
+    return Unidad(
+      id: json['id'],
+      nombre: json['nombre'],
+      descripcion: json['descripcion'],
+      estado: json['estado'],
+      cursoId: json['cursoId'],
+      actividades: (json['actividades'] as List<dynamic>?)
+              ?.map((a) => ActividadMapper.fromJson(a))
+              .toList() ??
+          [],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'nombre': nombre,
+        'descripcion': descripcion,
+        'estado': estado,
+        'cursoId': cursoId,
+        'actividades': actividades?.map((a) => ActividadMapper.toJson(a)).toList(),
+      };
 }

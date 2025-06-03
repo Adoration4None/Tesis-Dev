@@ -30,49 +30,6 @@ class ActividadCuestionario extends Actividad {
     return 'ActividadCuestionario: $id, $nombre, $dimension, $casillas, $respuestas, $ejercicioImage, $ejemploImage, $pista, $respuestaCorrecta, $habilidades, $estado, ${pesoRespuestas}';
   }
 
-  factory ActividadCuestionario.fromJson(Map<String, dynamic> json) =>
-      ActividadCuestionario(
-        id: json['id'],
-        nombre: json['nombre'],
-        descripcion: json['descripcion'],
-        estado: json['estado'],
-        tipoActividad: json['tipoActividad'],
-        pesoRespuestas: json['pesoRespuestas'] != null
-            ? List<int>.from(json['pesoRespuestas'])
-            : null,
-        habilidades: json['habilidades'] != null
-            ? List<int>.from(json['habilidades'])
-            : null,
-        pista: json['pista'],
-        dimension: json['dimension'],
-        casillas:
-            json['casillas'] != null ? List<int>.from(json['casillas']) : null,
-        respuestas: (json['respuestas'] as List<dynamic>?)
-            ?.map((r) => List<dynamic>.from(r as List<dynamic>))
-            .toList(),
-        ejercicioImage: json['ejercicioImage'],
-        ejemploImage: json['ejemploImage'],
-        respuestaCorrecta: json['respuestaCorrecta'],
-      );
-
-  @override
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'nombre': nombre,
-        'descripcion': descripcion,
-        'estado': estado,
-        'tipoActividad': tipoActividad,
-        'pesoRespuestas': pesoRespuestas,
-        'habilidades': habilidades,
-        'pista': pista,
-        'dimension': dimension,
-        'casillas': casillas,
-        'respuestas': respuestas,
-        'ejercicioImage': ejercicioImage,
-        'ejemploImage': ejemploImage,
-        'respuestaCorrecta': respuestaCorrecta,
-      };
-
   // To Map
   factory ActividadCuestionario.fromFirestore(Map<String, dynamic> data) {
     return ActividadCuestionario(

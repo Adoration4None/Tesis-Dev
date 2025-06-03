@@ -38,79 +38,10 @@ class Curso {
     this.unidades,
   });
 
-    /* factory Curso.fromJson(Map<String, dynamic> json) => Curso(
-    id: json['id'],
-    nombre: json['nombre'],
-    codigoAcceso: json['codigoAcceso'],
-    departamento: json['departamento'],
-    ciudad: json['ciudad'],
-    colegio: json['colegio'],
-    profesor: json['profesor'],
-    portada: json['portada'],
-    numEstudiantes: json['numEstudiantes'],
-    descripcion: json['descripcion'],
-    fechaCreacion: json['fechaCreacion'],
-    fechaFinalizacion: json['fechaFinalizacion'],
-    estado: json['estado'],
-    estudiantes: (json['estudiantes'] as List<dynamic>?)
-        ?.map((e) => Estudiante.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    unidades: (json['unidades'] as List<dynamic>?)
-        ?.map((u) => Unidad.fromJson(u as Map<String, dynamic>))
-        .toList(),
-  ); */
-
-  factory Curso.fromJson(Map<String, dynamic> json) {
-    return Curso(
-      id: json['id'],
-      nombre: json['nombre'],
-      codigoAcceso: json['codigoAcceso'],
-      departamento: json['departamento'],
-      ciudad: json['ciudad'],
-      colegio: json['colegio'],
-      profesor: json['profesor'],
-      portada: json['portada'],
-      numEstudiantes: json['numEstudiantes'],
-      descripcion: json['descripcion'],
-      fechaCreacion: json['fechaCreacion'],
-      fechaFinalizacion: json['fechaFinalizacion'],
-      estado: json['estado'],
-      estudiantes: (json['estudiantes'] as List<dynamic>?)
-              ?.map((e) => Estudiante.fromJson(e))
-              .toList() ??
-          [],
-      unidades: (json['unidades'] as List<dynamic>?)
-              ?.map((u) => Unidad.fromJson(u))
-              .toList() ??
-          [],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'nombre': nombre,
-      'codigoAcceso': codigoAcceso,
-      'departamento': departamento,
-      'ciudad': ciudad,
-      'colegio': colegio,
-      'profesor': profesor,
-      'portada': portada,
-      'numEstudiantes': numEstudiantes,
-      'descripcion': descripcion,
-      'fechaCreacion': fechaCreacion,
-      'fechaFinalizacion': fechaFinalizacion,
-      'estado': estado,
-      'estudiantes': estudiantes?.map((e) => e.toJson()).toList(),
-      'unidades': unidades?.map((u) => u.toJson()).toList(),
-    };
-  }
-  
   @override
   String toString() {
     return 'Curso: $id, $nombre, $codigoAcceso, $departamento, $ciudad, $colegio,$profesor, $portada, $numEstudiantes, $descripcion, $fechaCreacion, $fechaFinalizacion, $estado, $unidades';
   }
-
 
   Map<String, dynamic> toFirestore() {
     return {
@@ -135,7 +66,6 @@ class Curso {
     };
   }
 
-/*
   factory Curso.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
     return Curso(
@@ -160,7 +90,6 @@ class Curso {
           .toList(),
     );
   }
-  */
 
   // copywith
   Curso copyWith({
@@ -208,5 +137,47 @@ class Curso {
     }
 
     return todasLasActividades;
+  }
+
+  factory Curso.fromJson(Map<String, dynamic> json) => Curso(
+        id: json['id'],
+        nombre: json['nombre'],
+        codigoAcceso: json['codigoAcceso'],
+        departamento: json['departamento'],
+        ciudad: json['ciudad'],
+        colegio: json['colegio'],
+        profesor: json['profesor'],
+        portada: json['portada'],
+        numEstudiantes: json['numEstudiantes'],
+        descripcion: json['descripcion'],
+        fechaCreacion: json['fechaCreacion'],
+        fechaFinalizacion: json['fechaFinalizacion'],
+        estado: json['estado'],
+        estudiantes: (json['estudiantes'] as List<dynamic>?)
+            ?.map((e) => Estudiante.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        unidades: (json['unidades'] as List<dynamic>?)
+            ?.map((u) => Unidad.fromJson(u as Map<String, dynamic>))
+            .toList(),
+      );
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'nombre': nombre,
+      'codigoAcceso': codigoAcceso,
+      'departamento': departamento,
+      'ciudad': ciudad,
+      'colegio': colegio,
+      'profesor': profesor,
+      'portada': portada,
+      'numEstudiantes': numEstudiantes,
+      'descripcion': descripcion,
+      'fechaCreacion': fechaCreacion,
+      'fechaFinalizacion': fechaFinalizacion,
+      'estado': estado,
+      'estudiantes': estudiantes?.map((e) => e.toJson()).toList(),
+      'unidades': unidades?.map((u) => u.toJson()).toList(),
+    };
   }
 }

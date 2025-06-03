@@ -16,37 +16,6 @@ class ActividadDesconectada extends Actividad {
       this.ejercicioImage,
       this.ejemploImage});
 
-  factory ActividadDesconectada.fromJson(Map<String, dynamic> json) =>
-      ActividadDesconectada(
-          id: json['id'],
-          nombre: json['nombre'],
-          descripcion: json['descripcion'],
-          estado: json['estado'],
-          tipoActividad: json['tipoActividad'],
-          pesoRespuestas: json['pesoRespuestas'] != null
-              ? List<int>.from(json['pesoRespuestas'])
-              : null,
-          habilidades: json['habilidades'] != null
-              ? List<int>.from(json['habilidades'])
-              : null,
-          pista: json['pista'],
-          ejemploImage: json['ejemploImage'],
-          ejercicioImage: json['ejercicioImage']);
-
-  @override
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'nombre': nombre,
-        'descripcion': descripcion,
-        'estado': estado,
-        'tipoActividad': tipoActividad,
-        'pesoRespuestas': pesoRespuestas,
-        'habilidades': habilidades,
-        'pista': pista,
-        'ejemploImage': ejemploImage,
-        'ejercicioImage': ejercicioImage,
-      };
-
   // To Map
   factory ActividadDesconectada.fromFirestore(Map<String, dynamic> data) {
     return ActividadDesconectada(
