@@ -7,10 +7,10 @@ class Estudiante {
   Estudiante({this.id, this.nombre, this.avatar, this.genero});
 
   factory Estudiante.fromJson(Map<String, dynamic> json) => Estudiante(
-    id: json['id'],
-    nombre: json['nombre'],
-    avatar: json['avatar'],
-    genero: json['genero'],
+    id: json['id']  as int?,
+    nombre: json['nombre'] as String? ?? '',
+    avatar: json['avatar'] as String? ?? '',
+    genero: json['genero'] as String? ?? '',
   );
 
   Map<String, dynamic> toJson() => {

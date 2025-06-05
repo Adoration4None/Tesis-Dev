@@ -50,6 +50,8 @@ class _HomeWebState extends State<HomeWeb> {
 
 
     await initData.obtenerCursosYProfesores();
+    final cursosCubit = context.read<BDCursosCubit>();
+    await cursosCubit.loadCursos();
 
     _simularCarga();
   }

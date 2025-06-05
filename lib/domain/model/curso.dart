@@ -39,19 +39,19 @@ class Curso {
   });
 
   factory Curso.fromJson(Map<String, dynamic> json) => Curso(
-    id: json['id'],
-    nombre: json['nombre'],
-    codigoAcceso: json['codigoAcceso'],
-    departamento: json['departamento'],
-    ciudad: json['ciudad'],
-    colegio: json['colegio'],
-    profesor: (json['profesorId']),
-    portada: json['portada'],
-    numEstudiantes: json['numEstudiantes'],
-    descripcion: json['descripcion'],
-    fechaCreacion: json['fechaCreacion'],
-    fechaFinalizacion: json['fechaFinalizacion'],
-    estado: json['estado'],
+    id: json['id'] as  int?,
+    nombre: json['nombre'] as String? ?? '',
+    codigoAcceso: json['codigoAcceso'] as String? ?? '',
+    departamento: json['departamento'] as String? ?? '',
+    ciudad: json['ciudad'] as String? ?? '',
+    colegio: json['colegio'] as String? ?? '',
+    profesor: (json['profesorId']) as int?,
+    portada: json['portada'] as String? ?? '',
+    numEstudiantes: json['numEstudiantes'] as int? ?? 0,
+    descripcion: json['descripcion']  as String? ?? '',
+    fechaCreacion: json['fechaCreacion'] as String? ?? '',
+    fechaFinalizacion: json['fechaFinalizacion'] as String? ?? '',
+    estado: json['estado']  as bool?,
     estudiantes: (json['estudiantes'] as List<dynamic>?)
         ?.map((e) => Estudiante.fromJson(e as Map<String, dynamic>))
         .toList()

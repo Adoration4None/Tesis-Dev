@@ -31,30 +31,53 @@ class ActividadCuestionario extends Actividad {
     return 'ActividadCuestionario: $id, $nombre, $dimension, $casillas, $respuestas, $ejercicioImage, $ejemploImage, $pista, $respuestaCorrecta, $habilidades, $estado, ${pesoRespuestas}';
   }
 
-  factory ActividadCuestionario.fromJson(Map<String, dynamic> json) =>
-      ActividadCuestionario(
-        id: json['id'],
-        nombre: json['nombre'],
-        descripcion: json['descripcion'],
-        estado: json['estado'],
-        tipoActividad: json['tipoActividad'],
-        pesoRespuestas: json['pesoRespuestas'] != null
-            ? List<int>.from( jsonDecode(json['pesoRespuestas']) )
-            : null,
-        habilidades: json['habilidades'] != null
-            ? List<int>.from( jsonDecode(json['habilidades']) )
-            : null,
-        pista: json['pista'],
-        dimension: json['dimension'],
-        casillas:
-            json['casillas'] != null ? List<int>.from( jsonDecode( json['casillas']) ) : null,
-        respuestas: (json['respuestas'] as List<dynamic>?)
-            ?.map((r) => List<dynamic>.from(r as List<dynamic>))
-            .toList(),
-        ejercicioImage: json['ejercicioImage'],
-        ejemploImage: json['ejemploImage'],
-        respuestaCorrecta: json['respuestaCorrecta'],
-      );
+  factory ActividadCuestionario.fromJson(Map<String, dynamic> json) {
+    List<int> decodeIntList(String? raw) {
+      if (raw == null || raw.isEmpty) return <int>[];
+      try {
+        final decoded = jsonDecode(raw);
+
+        if (decoded is List) {
+          return decoded.map((e) => (e as num).toInt()).toList();
+        }
+      } catch (_) {}
+      return <int>[];
+    }
+
+    // Helper para decodificar un string JSON en List<List<dynamic>>
+    List<List<dynamic>> decodeNestedList(String? raw) {
+      if (raw == null || raw.isEmpty) return <List<dynamic>>[];
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is List) {
+          return decoded
+              .map((inner) => (inner as List<dynamic>).toList())
+              .toList();
+        }
+      } catch (_) {}
+      return <List<dynamic>>[];
+    }
+
+    return ActividadCuestionario(
+      id: json['id'] as int?,
+      nombre: json['nombre'] as String? ?? '',
+      descripcion: json['descripcion'] as String? ?? '',
+      estado: json['estado'] as String? ?? '',
+      tipoActividad: json['tipoActividad'] as String? ?? '',
+
+      pesoRespuestas: decodeIntList(json['pesoRespuestas'] as String?),
+      habilidades: decodeIntList(json['habilidades'] as String?),
+      pista: json['pista'] as String? ?? '',
+
+      dimension: json['dimension'] as int? ?? 0,
+      casillas: decodeIntList(json['casillas'] as String?),
+      respuestas: decodeNestedList(json['respuestas'] as String?),
+
+      ejercicioImage: json['ejercicioImage'] as String? ?? '',
+      ejemploImage: json['ejemploImage'] as String? ?? '',
+      respuestaCorrecta: json['respuestaCorrecta'] as int? ?? 0,
+    );
+  }
 
   @override
   Map<String, dynamic> toJson() => {

@@ -43,6 +43,7 @@ class ActividadGlobalFB {
         this.respuestaCorrecta});
 
   // To Map
+  /*
   factory ActividadGlobalFB.fromFirestore(Map<String, dynamic> json) {
     return ActividadGlobalFB(
         id: json['id'],
@@ -86,4 +87,5 @@ class ActividadGlobalFB {
       if (respuestaCorrecta != null) "respuestaCorrecta": respuestaCorrecta
     };
   }
+  */
 }

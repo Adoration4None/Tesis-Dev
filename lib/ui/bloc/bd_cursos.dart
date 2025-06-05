@@ -1,5 +1,6 @@
 import '/domain/model/curso.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '/infraestructure/driven_adapter/cursos_adapter/cursos_data_adapter.dart';
 
 // Cubit para manejar el estado del nombre completo
 class BDCursosCubit extends Cubit<List<Curso>> {
@@ -56,6 +57,17 @@ class BDCursosCubit extends Cubit<List<Curso>> {
       List<Curso> cursos = List.from(state);
       cursos[index] = curso;
       emit(cursos);
+    }
+  }
+
+
+  Future<void> loadCursos() async {
+    try {
+      final cursos = await CursosDataAdapter().getCursos();
+      emit(cursos);
+    } catch (e) {
+      emit([]);
+      print('Error cargando cursos: $e');
     }
   }
 }

@@ -22,29 +22,51 @@ class ActividadLaberinto extends Actividad {
         this.mejorCamino2 = const [],
         this.initialState});
 
-  factory ActividadLaberinto.fromJson(Map<String, dynamic> json) =>
-      ActividadLaberinto(
-        id: json['id'],
-        nombre: json['nombre'],
-        descripcion: json['descripcion'],
-        estado: json['estado'],
-        tipoActividad: json['tipoActividad'],
-        pesoRespuestas: json['pesoRespuestas'] != null
-            ? List<int>.from( jsonDecode(json['pesoRespuestas']) )
-            : null,
-        habilidades: json['habilidades'] != null
-            ? List<int>.from( jsonDecode(json['habilidades']) )
-            : null,
-        pista: json['pista'],
-        nombreArchivo: json['nombreArchivo'],
-        mejorCamino: json['mejorCamino'] != null
-            ? List<dynamic>.from( jsonDecode(json['mejorCamino']) )
-            : null,
-        mejorCamino2: json['mejorCamino2'] != null
-            ? List<dynamic>.from( jsonDecode(json['mejorCamino2']) )
-            : null,
-        initialState: json['initialState'],
-      );
+  factory ActividadLaberinto.fromJson(Map<String, dynamic> json) {
+    List<int> decodeIntList(String? raw) {
+      if (raw == null || raw.isEmpty) return <int>[];
+      try {
+        final decoded = jsonDecode(raw);
+
+        if (decoded is List) {
+          return decoded.map((e) => (e as num).toInt()).toList();
+        }
+      } catch (_) {}
+      return <int>[];
+    }
+
+    // Helper para decodificar un string JSON en List<List<dynamic>>
+    List<List<dynamic>> decodeNestedList(String? raw) {
+      if (raw == null || raw.isEmpty) return <List<dynamic>>[];
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is List) {
+          return decoded
+              .map((inner) => (inner as List<dynamic>).toList())
+              .toList();
+        }
+      } catch (_) {}
+      return <List<dynamic>>[];
+    }
+
+    return ActividadLaberinto(
+      id: json['id'] as int?,
+      nombre: json['nombre'] as String? ?? '',
+      descripcion: json['descripcion'] as String? ?? '',
+      estado: json['estado'] as String? ?? '',
+      tipoActividad: json['tipoActividad'] as String? ?? '',
+
+      pesoRespuestas: decodeIntList(json['pesoRespuestas'] as String?),
+      habilidades: decodeIntList(json['habilidades'] as String?),
+      pista: json['pista'] as String? ?? '',
+
+      nombreArchivo: json['nombreArchivo'] as String? ?? '',
+      mejorCamino: decodeNestedList(json['mejorCamino'] as String?),
+      mejorCamino2: decodeNestedList(json['mejorCamino2'] as String?),
+      initialState: json['initialState'] as int? ?? 0
+    );
+  }
+      
 
   @override
   Map<String, dynamic> toJson() => {
